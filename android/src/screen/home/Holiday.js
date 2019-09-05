@@ -4,16 +4,49 @@ import {Card} from 'native-base';
 export default class Holiday extends Component {
   constructor(props) {
     super(props);
+    
     this.state = {
+      isloading:false,
+      dataSource: '',
+      firtData: '',
+      secendData:''
     };
+  }
+
+  componentDidMount() {
+    let first;
+    let second;
+    fetch('http://leave.greenmile.co.th/api/get_vacations')
+    .then((response) => response.json())
+    .then((responseJson) => {
+        this.setState({
+          isloading:true,
+          dataSource : responseJson.data
+        })
+        this.state.dataSource.forEach( (value , index) => {
+          switch(index) {
+            case 0 : first = value ; break;
+            case 1 : second = value ; break;
+          }
+        });
+        this.setState({
+          firtData:first,
+          secendData:second
+        })
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   render() {
     return (
         <Card style={styles.LeaveCard}>
-            <Text style={{fontSize:20, marginTop:5, fontFamily: 'Righteous-Regular', color:'rgba(0, 0, 0, 0.4)'}}>Holiday</Text>
-            <Text style={{fontSize:20, color:'green', fontFamily:'Kanit-Regular', marginTop:5}}>วันจันทร์ 12 สิงหาคม วันแม่แห่งชาติ</Text>
-            <Text style={{fontSize:15, fontFamily:'Kanit-Regular'}}>วันจันทร์ 20 สิงหาคม วันหยุดแห่งชาติ</Text>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center',}}>
+              <Text style={{fontSize:20, marginTop:5, fontFamily: 'Righteous-Regular', color:'rgba(0, 0, 0, 0.4)'}}>Holiday</Text>
+              <Text style={{fontSize:20, color:'green', fontFamily:'Kanit-Regular', marginTop:5}}>{this.state.firtData.title}</Text>
+              <Text style={{fontSize:15, fontFamily:'Kanit-Regular',}}>{ this.state.secendData.title }</Text>
+          </View>
         </Card>
     );
   }
@@ -21,9 +54,11 @@ export default class Holiday extends Component {
 
 const styles = StyleSheet.create({
     LeaveCard: {
+        flex:1,
         borderRadius: 15,
         alignItems:'center',
+        justifyContent:'center',
         height:100,
-        marginTop:10
+        marginTop:10,
       },
 })

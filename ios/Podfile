@@ -35,6 +35,8 @@ target 'myApp' do
   pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
 
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'myAppTests' do
     inherit! :search_paths
     # Pods for testing

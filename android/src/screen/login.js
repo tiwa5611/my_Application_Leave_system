@@ -3,13 +3,28 @@ import { View, Text, ImageBackground, StyleSheet, StatusBar, TextInput} from 're
 import {Container, Input, Item, Icon} from 'native-base'
 import { TouchableOpacity, ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      username:'',
+      password:'',
+      status_token : ''
     };
   }
+
+  componentDidMount () {
+    this.conditiongetToken().then(( token ) => {
+      let status = token
+      if(status != null) {
+        return this.props.navigation.navigate('Dashboard')
+      } else {
+        console.log('Not have token');
+      }
+    })
+  } 
 
   render() {
     return (
@@ -30,7 +45,8 @@ export default class login extends Component {
                   <Text style={styles.textSubtitle}>USERNAME</Text>
                     <Item style={styles.textInput}>
                       <Input 
-                      
+                        onChangeText={(text) => this.setState({ username:text })}
+                        value={this.state.username}
                       />
                     </Item>
                 </View>
@@ -39,12 +55,15 @@ export default class login extends Component {
                     <Item style={styles.textInput}>
                       <Input 
                         secureTextEntry={true}
+                        onChangeText={(text) => this.setState({ password:text })}
+                        value={this.state.password}
                       />
                     </Item>
                 </View>
                 <View style={{paddingHorizontal:50 ,marginTop:30}}>
-                  <TouchableOpacity activeOpacity={0.5} style={styles.btnLogin}  onPress={() => this.props.navigation.navigate('Dashboard')}>
+                  <TouchableOpacity activeOpacity={0.5} style={styles.btnLogin}  onPress={this.clickListener}>
                     <Text style={styles.textLogin}>Login</Text>
+                    {/* onPress={() => this.props.navigation.navigate('Dashboard')} */}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -52,6 +71,39 @@ export default class login extends Component {
         </ImageBackground>
       </Container>
     );
+  }
+
+  clickListener = () => {
+    fetch('http://leave.greenmile.co.th/api/login', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+                          "username": this.state.username, 
+                          "password": this.state.password,
+                        })
+    }).then((response) => response.json())
+    .then((result) => { 
+        if(result.data != null) {
+          this.saveToken(result.data);
+        } else {
+          alert('username or password fail.')
+        }
+    }).catch( (error) => {
+      console.log("-------- error ------- " + error);
+      alert("result:" + error)
+    });
+  }
+
+  saveToken = ( token ) => {
+    AsyncStorage.setItem('user_token',JSON.stringify(token));
+    return this.props.navigation.navigate('Dashboard');
+  }
+
+  conditiongetToken = async () => {
+   return await AsyncStorage.getItem('user_token');
   }
 }
 

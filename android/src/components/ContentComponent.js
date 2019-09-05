@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, ImageBackground, Image, Button, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container} from 'native-base'
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class ContentComponent extends Component {
   constructor(props) {
@@ -35,7 +36,8 @@ export default class ContentComponent extends Component {
                     <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Leaveorder')}>
                         <Text style={styles.textStyle}>รายการลา</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Login')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.deleteToken()}>
+                    {/* this.props.navigation.navigate('Login') */}
                         <Text style={styles.textStyle}>ออกจากระบบ</Text>
                     </TouchableOpacity>
                 </View>
@@ -43,6 +45,34 @@ export default class ContentComponent extends Component {
         </Container>
       
     );
+  }
+
+//   logOut = () => {
+//       let token = this.getToken() 
+//       console.log('Token:', token);
+    //   async removeItemValue(token) {
+    //     try {
+    //       await AsyncStorage.removeItem(token);
+    //       return true;
+    //     }
+    //     catch(exception) {
+    //       return false;
+    //     }
+    //   }
+//   }
+
+  async deleteToken () {
+    try {
+        await AsyncStorage.removeItem('user_token')
+        this.goToLoginPage()
+        // if(this.conditiongetToken() == null) return this.props.navigation.navigate('Login');
+    } catch(error) {
+    alert("error:", error)
+    }
+  }
+
+  goToLoginPage() {
+      return this.props.navigation.navigate('Login');
   }
 }
 

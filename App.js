@@ -8,11 +8,11 @@
 
 import React, { Component } from 'react';
 import AppContainer from './android/src/components/AppContainerComponent';
-import Calendar from './android/src/screen/history';
+import Calendar from './android/src/Models/Token';
 class App extends Component {
   render() {
-    // return <AppContainer/>;
-    return <Calendar/>
+    return <AppContainer/>;
+    // return <Calendar/>
   }
 }
 export default App;

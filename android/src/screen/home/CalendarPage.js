@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 import LeaveSummary from './LeaveSummary';
 import Holiday from './Holiday';
+import AsyncStorage from '@react-native-community/async-storage';
 const width = Dimensions.get('window').width * 0.9;
 const widthtab = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height ;
@@ -17,14 +18,38 @@ class CalendarPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: {}
+      items: {},
+      isloading:true,
+      dataSource:''
     };
   }
 
+  componentDidMount() {
+    fetch('http://leave.greenmile.co.th/api/get_leave')
+    .then((response) => response.json())
+    .then((responseJson) => {
+        this.setState({
+          isloading:false,
+          dataSource: responseJson.data,
+        })
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  getToken = async () => {
+    try {
+      let token_user = await AsyncStorage.getItem('user_token');
+      let parsed = JSON.parse(token_user)
+      this.setState({status_token:true})
+      console.log('how get token: ', parsed);
+    } catch (error) {
+      console.log('error didMonth: ', error);
+    } 
+  }
+
   render() {
-    // const vacation = {key:'vacation', color: 'red', selectedDotColor: 'blue'};
-    // const massage = {key:'massage', color: 'blue', selectedDotColor: 'blue'};
-    // const workout = {key:'workout', color: 'green'};
 
     return (
       <Container style={styles.ContainerStyle}>

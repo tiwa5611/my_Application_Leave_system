@@ -6,14 +6,13 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { FlatList } from 'react-native-gesture-handler';
-const widthtab = Dimensions.get('window').width;
+const width = Dimensions.get('window').width;
 const height = Dimensions.get('screen').height;
 
 class HistoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      enable:true,
       isloading: true,
       dataSource: '',
     };
@@ -23,9 +22,8 @@ class HistoryPage extends Component {
     alert('btn Delet Click ' + secId );
     console.log(rowId);
   }
-
   componentDidMount() {
-    fetch('http://leave.greenmile.co.th/api/vacation')
+    fetch('http://leave.greenmile.co.th/api/get_leave')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
@@ -33,19 +31,18 @@ class HistoryPage extends Component {
           dataSource: responseJson.data,
         })
     })
-    
     .catch((error) => {
       console.error(error);
     });
   }
 
- 
-
   render() {
+
+
     if(this.state.isloading) {
       return (
-        <View style={{alignItems:'center', justifyContent:'center'}}>
-          <ActivityIndicator style={{color:'green', size:30}}/>
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <ActivityIndicator  size="large" color="green"/>
         </View>
       );
     } else {
@@ -53,21 +50,16 @@ class HistoryPage extends Component {
         <Container style={styles.containerStyle}>
           <StatusBar translucent
             backgroundColor="rgba(0, 0, 0, 0.01)"
-            // animated
           />
           {console.log('DataSource: 0005', this.state.dataSource)}
           <List>
-          <FlatList
-            data={this.state.dataSource}
-            keyExtractor = {(item, index) => item.id}
-            renderItem={({item, index, rowMap}) => (
-              <ListItem
-                {...item}
-                onSwipeFromLeft={ () => alert('XXXXX') }
-              />
-            )}
-            // ItemSeparatorComponent={() => <Separator />}
-          />
+            <FlatList
+              data={this.state.dataSource}
+              keyExtractor = {(item) => item.id !== item.id }
+              renderItem={({item}) => (
+                <ListItem {...item}/>
+              )}
+            />
           </List>
         </Container>
       );
@@ -75,7 +67,9 @@ class HistoryPage extends Component {
   }
 }
 
-const ListItem = (item, onSwipeFromLeft) => {
+
+const ListItem = (item) => {
+
   getColor = (color) => {
     switch(color) {
       case 'ลาป่วย' : return '#f1c40f';
@@ -84,7 +78,8 @@ const ListItem = (item, onSwipeFromLeft) => {
         return '#379245'
     }
   }
-  getIcon = (icon, index) => {
+
+  getIcon = (icon) => {
     switch(icon) {
       case 'ลาป่วย' : return 'plus-circle';
       case 'ลากิจ' : return 'exclamation-triangle'
@@ -93,36 +88,22 @@ const ListItem = (item, onSwipeFromLeft) => {
     }
   }
 
-  updateRef = ref => {
-    this._swipeableRow = ref;
-  };
-
-  close = () => {
-    this._swipeableRow.close();
-  };
-
   return (
     <Swipeable
-        // friction={2}
-        rightThreshold={0}
-        overshootRight={false}
-        renderRightActions={renderRightActions}
-        onSwipeableRightWillOpen={console.warn("onSwipeableRightWillOpen")}
-        // childrenContainerStyle={{backgroundColor:"rgba(0, 0, 255, 100)", flex:1}}
-        // onSwipeableRightWillOpen={ () => setTimeout(() =>{ console.log('this console', this) },1000)}
-      >
+      renderRightActions={ item.status === 'รออนุมัติ' ? RightActions : null }  
+    >
       <View>
         <View style={styles.containerListStyle}>
-          <View style={{width:5, backgroundColor:getColor(item.name) }}/>
+          <View style={{width:5, backgroundColor:getColor(item.leave_type) }} />
           <View style={{marginLeft:10, marginRight:15, alignItems:'center', justifyContent:'center'}}>
-            <Icon name={getIcon(item.name)} color={getColor(item.name) } size={30} style={[{transform: item.name == 'ลาพักร้อน' ? [{ rotate: '315deg'}] :  [{ rotate: '0deg'}]}]}/>
+            <Icon name={getIcon(item.leave_type)} color={getColor(item.leave_type) } size={30} style={[{transform: item.leave_type == 'ลาพักร้อน' ? [{ rotate: '315deg'}] :  [{ rotate: '0deg'}]}]}/>
           </View>
           <View> 
-            <Text style={styles.textTyleLeave}>{item.name}</Text>
-            <Text style={styles.textReason}>{item.date_from}</Text>
+            <Text style={styles.textTyleLeave}>{item.leave_date}</Text>
+            <Text style={styles.textReason}>{item.leave_desc}</Text>
           </View>
           <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
-            <Icon name={'info-circle'} color={'#8a8787'}/>
+            <Icon name={ item.status == 'Approved' ? '': 'info-circle'} color={'#8a8787'}/>
           </View>
         </View>
       </View> 
@@ -130,30 +111,39 @@ const ListItem = (item, onSwipeFromLeft) => {
   );
 }
 
+
+
 export const Separator = () => <View style={styles.separator} />;
 
 
-const renderRightActions = () => {
+RightActions = () => {
+
+  btnDeleteClick = (secId, rowId) => { 
+    alert('You click button Delete', secId,' and ' ,rowId);
+  }
   
+  btnEditClick = (secId, rowId) => {
+    alert('You click button Edit', secId, 'and', rowId);
+  }
+
   return (
         <View style={{flexDirection:'row-reverse', height:'100%'}}>
             <TouchableOpacity
-              // onPress={()=> this.btnDeleteClick(secId, rowId)}
+              // onPress={onPress}
               activeOpacity={0.5} 
               style={[styles.swipeButtonStyle, {backgroundColor: '#8a8787'}]} 
             >
               <Text style={styles.textSwipeStyle}>แก้ไข</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              // onPress={()=> this.btnEditClick(secId, rowId)}
+              // onPress={this.close}  
               activeOpacity={0.5} 
               style={[styles.swipeButtonStyle, {backgroundColor: 'red'}]}
             >
               <Text style={styles.textSwipeStyle}>ลบ</Text>
             </TouchableOpacity>
         </View>
-
-  );
+      );
 }
 
 export default  History = createAppContainer(createStackNavigator({
@@ -170,7 +160,7 @@ export default  History = createAppContainer(createStackNavigator({
           locations={[0,1,0.6]}
           start={{ x: 0, y: 1 }}
           end={{ x: 1, y: 1 }}
-          style={{flex:1 ,width:widthtab}}>
+          style={{flex:1 ,width:width}}>
           <View style={{flexDirection:'row'}}>
             <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:10}} onPress={() => navigation.navigate('Dashboard')}>
               <Image source={require('../../images/back_button.png')} style={{height:30, width:30, marginTop:15}}/>
@@ -196,7 +186,7 @@ const styles = StyleSheet.create({
   },
   textTyleLeave:{
     marginTop:10,
-    fontSize:widthtab*0.045,
+    fontSize:width*0.045,
     marginLeft:10,
     fontFamily:'Kanit-Regular'
   },
@@ -208,7 +198,7 @@ const styles = StyleSheet.create({
     fontFamily:'Kanit-Regular'
   },
   timeStyle: {
-    fontSize:(widthtab/25), 
+    fontSize:(width/25), 
     fontFamily:'Kanit-Regular', 
     color:'rgba(0, 0, 0, 0.5)'
   },

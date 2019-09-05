@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, StatusBar, TouchableOpacity, Image, ImageBackground, Dimensions, View, Text } from 'react-native';
 import {Container, Card} from 'native-base';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { createAppContainer, createStackNavigator} from 'react-navigation';
+// import Token from '../../Models/Token';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const widthtab = Dimensions.get('window').width;
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
@@ -11,7 +13,11 @@ class ProfilePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // data_token: Token 
     };
+  }
+
+  componentDidMount () {
   }
 
   render() {
@@ -23,6 +29,7 @@ class ProfilePage extends Component {
         />
           <ImageBackground source={require('../../images/background_one.png')} style={{position:'absolute', width: width,  height:height*0.8}}/>
               <View style={{ paddingHorizontal:10 }}>
+                {/* {console.log('yyyyy', this.state.data_token)} */}
                 <Card style={styles.cardStyle}>
                   <View style={{marginTop:-130, alignItems:'center'  }}>
                     <Image source={require('../../images/pee_one.png')} style={styles.imageStyle}/>
