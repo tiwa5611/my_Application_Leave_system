@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, ImageBackground, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import {Container, Card, CardItem, Body, Item} from 'native-base';
+import {CalendarList} from 'react-native-calendars';
+import {Container, Card} from 'native-base';
 import { createAppContainer, createStackNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,20 +12,43 @@ const width = Dimensions.get('window').width * 0.9;
 const widthtab = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height ;
 
+const data = [
+  {
+    from: "2019-09-01",
+    to: "2019-09-01",
+    days: 0.5,
+    type: "ลาป่วย",
+    status: "Approved",
+  },{
+    from: "2019-09-15",
+    to: "2019-09-15",
+    days: 0.5,
+    type: "ลากิจ",
+    status: "Approved",
+  },{
+    from: "2019-09-08",
+    to: "2019-09-08",
+    days: 0.5,
+    type: "ลาพักผ่อน",
+    status: "Approved",
+  },
+
+]
 
 
 class CalendarPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: {},
       isloading:true,
-      dataSource:''
+      dataSource:'',
+      marked:null
     };
   }
 
   componentDidMount() {
-    fetch('http://leave.greenmile.co.th/api/get_leave')
+    console.log('componentDidMount')
+    fetch('http://leave.greenmile.co.th/api/get_calendar')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
@@ -34,23 +57,38 @@ class CalendarPage extends Component {
         })
     })
     .catch((error) => {
-      console.error(error);
+      console.error('Eror in page home', error);
     });
+    this.anotherFunc();
   }
 
-  getToken = async () => {
-    try {
-      let token_user = await AsyncStorage.getItem('user_token');
-      let parsed = JSON.parse(token_user)
-      this.setState({status_token:true})
-      console.log('how get token: ', parsed);
-    } catch (error) {
-      console.log('error didMonth: ', error);
-    } 
+  anotherFunc = () => {
+    let arryDate = [];
+    let arryValue = {};
+    data.forEach((value, index) => {
+      console.log('index', index)
+      console.log('index', value.from,' and ' , value.to)
+      if(value.from === value.to) {
+         let obj = Object.assign({}, { [value.from] : {periods:[{startingDay: true, endingDay: true, color: this.getColor(value.type)}]}});
+         arryDate.push(obj);
+      }
+    });
+    arryValue = Object.assign(...arryDate)
+    console.log('anotherFunc() ', arryValue);
+    this.setState({ marked : arryValue});
+  }
+
+  getColor = (color) => {
+    switch(color) {
+      case 'ลาป่วย' : return '#f1c40f';
+      case 'ลากิจ' : return '#cd201f'
+      default:
+        return '#379245'
+    }
   }
 
   render() {
-
+    console.log('render')
     return (
       <Container style={styles.ContainerStyle}>
         <StatusBar translucent
@@ -60,6 +98,7 @@ class CalendarPage extends Component {
         <ImageBackground source={require('../../images/background_one.png')}  style={{position:'absolute', left:0, right:0, width:'100%', height:height*0.8}}/>
         <ScrollView style={{backgroundColor:'transparent'}}>
             <View style={{paddingHorizontal:10, marginTop:80}}>
+              {console.log('calendar after fetch api: ', this.state.dataSource)}
               <Card style={styles.CalendarCard}>
                   <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                     <CalendarList
@@ -71,40 +110,14 @@ class CalendarPage extends Component {
                       horizontal
                       pagingEnabled
                       calendarWidth={width}
-                      markedDates={{
-                        '2019-08-20': {
-                          periods: [
-                            { startingDay: true, endingDay: false, color: 'red' },
-                          ]
-                        },
-                        '2019-08-21': {
-                          periods: [
-                            { startingDay: false, endingDay: true, color: 'red' },
-                            // { startingDay: false, endingDay: true, color: '#ffa500' },
-                            // { startingDay: true, endingDay: false, color: '#f0e68c' },
-                          ]
-                        },
-                        '2019-08-22': {
-                          periods: [
-                            { startingDay: true, endingDay: true, color: 'green' },
-                          ]
-                        },
-                        '2019-08-26': {
-                          periods: [
-                            { startingDay: true, endingDay: false, color: '#f1c40f' },
-                          ]
-                        }
-                        ,
-                        '2019-08-27': {
-                          periods: [
-                            { startingDay: false, endingDay: true, color: '#f1c40f' },
-                          ]
-                        }
-                        // '2019-08-20': {textColor: 'green'},
-                        // '2019-08-22': {startingDay: true, color: 'green'},
-                        // '2019-08-23': {selected: true, endingDay: true, color: 'green', textColor: 'gray'},
-                        // '2019-08-04': {disabled: true, startingDay: true, color: 'green', endingDay: true}
-                      }}
+                      markedDates={this.state.marked}
+                      // markedDates={{
+                      //   '2019-09-20': {
+                      //     periods: [
+                      //       { startingDay: true, endingDay: false, color: 'red' },
+                      //     ]
+                      //   },
+                      // }}
                       theme = {{
                         todayTextColor: 'green',
                         monthTextColor: 'green',

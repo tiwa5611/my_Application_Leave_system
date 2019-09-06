@@ -2,14 +2,83 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {Card} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 export default class LeaveSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      leaveSick:'',
+      leaveHoliday:'',
+      leaveErrand:'',
+      dataSource:''
     };
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData =  async () => {
+    let sick, holliday, errand;
+    try {
+      const token_summary = await AsyncStorage.getItem('user_token');
+      console.log('token value: ', token_summary)
+      if( token_summary != null ) {
+        let token_value = JSON.parse(token_summary);
+        fetch('http://leave.greenmile.co.th/api/get_personal_leave' , {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "token" : token_value.token, 
+          })
+        })
+        .then((responseJson) => responseJson.json())
+        .then((result) => {
+          console.log('Data fetch to LeaveSummary:', result.data)
+          this.setState({ 
+            dataSource: result.data 
+          })
+          this.state.dataSource.forEach((value) => {
+              switch(value.title) {
+                case 'ลาป่วย': 
+                            sick = value.total 
+                            break;
+                case 'ลากิจ': 
+                            errand = value.total 
+                            break;
+                case 'ลาพักผ่อน': 
+                            holliday = value.total
+                            break;
+                default:
+                  break;
+              }
+          });
+
+          this.setState({
+            leaveErrand:errand,
+            leaveHoliday:holliday,
+            leaveSick:sick
+          })
+        })
+        .catch((error) => {
+          console.log('Error at LeaveSummary:', error);
+        })
+      } else {
+        console.log('Else condition LeaveSummary')
+      }
+
+    } catch (error) {
+      console.log('Error in component LeaveSummary:', error);
+    }
+  }
+
   render() {
+
+    
+
     return (
         <Card style={styles.summaryCard}>
             <LinearGradient
@@ -22,17 +91,17 @@ export default class LeaveSummary extends Component {
             </View>
             <View style={{justifyContent:'center', flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:30}}>
                 <View style={{justifyContent:'center', alignItems:'center', paddingHorizontal:10}}>
-                <Text style={styles.textCountStyle}>5.5</Text>
+                <Text style={styles.textCountStyle}>{ this.state.leaveSick }</Text>
                 <Text style={{color:'white', fontFamily:'Kanit-Regular', marginHorizontal:12}}>ลาป่วย</Text>
                 </View>
                 <View style={styles.itemStyle}/>
                 <View style={{justifyContent:'center', alignItems:'center', paddingHorizontal:10}}>
-                <Text style={styles.textCountStyle}>3.5</Text>
+                <Text style={styles.textCountStyle}>{ this.state.leaveErrand }</Text>
                 <Text style={styles.textLeaveType}>ลากิจ</Text>
                 </View>
                 <View style={styles.itemStyle}/>
                 <View style={{justifyContent:'center', alignItems:'center', paddingHorizontal:10}} >
-                <Text style={styles.textCountStyle}>0</Text>
+                <Text style={styles.textCountStyle}>{ this.state.leaveHoliday }</Text>
                 <Text style={styles.textLeaveType}>ลาพักผ่อน</Text>
                 </View>
             </View>

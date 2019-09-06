@@ -3,21 +3,50 @@ import { StyleSheet, StatusBar, TouchableOpacity, Image, ImageBackground, Dimens
 import {Container, Card} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { createAppContainer, createStackNavigator} from 'react-navigation';
-// import Token from '../../Models/Token';
 import AsyncStorage from '@react-native-community/async-storage';
-
-const widthtab = Dimensions.get('window').width;
 const height = Dimensions.get('screen').height;
 const width = Dimensions.get('screen').width;
 class ProfilePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // data_token: Token 
+      dataSouce:''
     };
   }
 
   componentDidMount () {
+    this.fetchDatafromAIP()
+  }
+
+  fetchDatafromAIP = async () => {
+    try {
+      const token_profile = await AsyncStorage.getItem('user_token');
+      if( token_profile != null) {
+        let token_value = JSON.parse(token_profile)
+        fetch('http://leave.greenmile.co.th/api/profile' , {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "token": token_value.token, 
+          })
+        })
+        .then((response) => response.json())
+        .then((result) => { 
+          this.setState({
+            dataSouce:result.data
+          })
+        }).catch( (error) => {
+          alert("result:" + error)
+        });
+      } else {
+        console.log(' hot have token');
+      }
+    } catch (error) {
+      console.log('Error in fucntion geToken:', error);
+    }
   }
 
   render() {
@@ -29,26 +58,29 @@ class ProfilePage extends Component {
         />
           <ImageBackground source={require('../../images/background_one.png')} style={{position:'absolute', width: width,  height:height*0.8}}/>
               <View style={{ paddingHorizontal:10 }}>
-                {/* {console.log('yyyyy', this.state.data_token)} */}
+              {/* source={require('../../images/background_one.png')} */}
                 <Card style={styles.cardStyle}>
-                  <View style={{marginTop:-130, alignItems:'center'  }}>
-                    <Image source={require('../../images/pee_one.png')} style={styles.imageStyle}/>
+                  <View style={{marginTop:-130, alignItems:'center' ,backgroundColor: 'transparent' }}>
+                    <Image 
+                      style={styles.imageStyle}
+                      source={{uri: this.state.dataSouce.picture}}
+                      />
                   </View>
                   <View style={styles.textViewStart}>
                     <Text style={styles.textTitle}>รหัสพนักงาน</Text>
-                    <Text style={styles.textDetail}>G015</Text>
+                    <Text style={styles.textDetail}>{this.state.dataSouce.emp_code}</Text>
                   </View>
                   <View style={styles.textView}>
                     <Text style={styles.textTitle}>ชื่อ-สกุล</Text>
-                    <Text style={styles.textDetail}>นายพีราวิช  ปัญธิเดช</Text>
+                    <Text style={styles.textDetail}>{this.state.dataSouce.emp_name + ' '+ this.state.dataSouce.emp_lastname}</Text>
                   </View>
                   <View style={styles.textView}>
                     <Text style={styles.textTitle}>ตำแหน่ง</Text>
-                    <Text style={styles.textDetail}>นักพัฒนาระบบ</Text>
+                    <Text style={styles.textDetail}>{this.state.dataSouce.emp_position}</Text>
                   </View>
                   <View style={styles.textViewEnd}>
                     <Text style={styles.textTitle}>อีเมล์</Text>
-                    <Text style={styles.textDetail}>perawit.p@greenmile.co.th</Text>
+                    <Text style={styles.textDetail}>{this.state.dataSouce.emp_email}</Text>
                   </View>
                 </Card>
               </View>
@@ -74,24 +106,6 @@ export default ProfileScreen = createAppContainer(createStackNavigator({
               <Text style={{fontSize:30, fontFamily:'Kanit-Regular', marginTop:10, marginRight:20, color:'white', paddingHorizontal:(width/2)-115}}>ข้อมูลส่วนตัว</Text>
             </View>
       </TouchableOpacity>
-      
-      // <LinearGradient
-      //   //colors={['#328f44', '#91c958']}
-      //   locations={[0.1, 0.9, 0.5, 0]}
-      //   start={{ x: 0, y: 1 }}
-      //   end={{ x: 1, y: 1 }}
-      //   style={{flex:1 ,width:widthtab, backgroundColor:'transparent'}}>
-      //   <View style={{flexDirection:'row'}}>
-      //     <TouchableOpacity style={{marginTop:30, marginLeft:20 ,marginBottom:10}}>
-      //       <Icon name="bars" size={30} color={'white'} style={{marginTop:15}}
-      //         onPress={ () => navigation.openDrawer() }
-      //       />
-      //     </TouchableOpacity>
-      //     <View style={{flex:1 ,justifyContent:'center' ,alignItems:'center'}}>
-      //       <Text style={{fontSize:30, fontFamily:'Kanit-Regular', marginTop:40, marginRight:20, color:'white'}}>ข้อมูลส่วนตัว</Text>
-      //     </View>
-      //   </View>
-      // </LinearGradient>
     };
   }
 }));
@@ -106,6 +120,7 @@ const styles = StyleSheet.create({
     borderColor:'white',
     borderWidth:5,
     borderRadius:150,
+    // backgroundColor: 'transparent'
   },
   cardStyle:{
     marginTop:230,

@@ -16,6 +16,21 @@ export default class login extends Component {
   }
 
   componentDidMount () {
+    
+    // this.conditiongetToken().then(( token ) => {
+    //   let status = token
+    //   if(status != null) {
+    //     return this.props.navigation.navigate('Dashboard')
+    //   } else {
+    //     console.log('Not have token');
+    //   }
+    // }).catch((error) =>{
+    //   alert("error in page login:", error)
+    // }) 
+  } 
+
+  render() {
+
     this.conditiongetToken().then(( token ) => {
       let status = token
       if(status != null) {
@@ -23,10 +38,10 @@ export default class login extends Component {
       } else {
         console.log('Not have token');
       }
-    })
-  } 
+    }).catch((error) =>{
+      alert("error in page login:", error)
+    }) 
 
-  render() {
     return (
       <Container>
         <StatusBar translucent
