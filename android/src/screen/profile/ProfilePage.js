@@ -20,17 +20,16 @@ class ProfilePage extends Component {
 
   fetchDatafromAIP = async () => {
     try {
-      const token_profile = await AsyncStorage.getItem('user_token');
-      if( token_profile != null) {
-        let token_value = JSON.parse(token_profile)
-        fetch('http://leave.greenmile.co.th/api/profile' , {
+      if( JSON.parse(await AsyncStorage.getItem('user_token')) != null) {
+        // fetch('http://leave.greenmile.co.th/api/profile' , {
+        fetch('http://10.0.2.2:8000/api/profile' , {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            "token": token_value.token, 
+            "token": JSON.parse(await AsyncStorage.getItem('user_token')), 
           })
         })
         .then((response) => response.json())
@@ -59,11 +58,12 @@ class ProfilePage extends Component {
           <ImageBackground source={require('../../images/background_one.png')} style={{position:'absolute', width: width,  height:height*0.8}}/>
               <View style={{ paddingHorizontal:10 }}>
               {/* source={require('../../images/background_one.png')} */}
+              { console.log('profile page: ', this.state.dataSouce) }
                 <Card style={styles.cardStyle}>
                   <View style={{marginTop:-130, alignItems:'center' ,backgroundColor: 'transparent' }}>
                     <Image 
                       style={styles.imageStyle}
-                      source={{uri: this.state.dataSouce.picture}}
+                      source={ this.state.dataSouce.picture ===""? require('../../images/default_image.png') : { uri: this.state.dataSouce.picture } }
                       />
                   </View>
                   <View style={styles.textViewStart}>

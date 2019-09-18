@@ -42,10 +42,10 @@ export default class Holiday extends Component {
   render() {
     return (
         <Card style={styles.LeaveCard}>
-          <View style={{flex:1, alignItems:'center', justifyContent:'center',}}>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center', marginBottom:10, marginHorizontal:10}}>
               <Text style={{fontSize:20, marginTop:5, fontFamily: 'Righteous-Regular', color:'rgba(0, 0, 0, 0.4)'}}>Holiday</Text>
               <Text style={{fontSize:20, color:'green', fontFamily:'Kanit-Regular', marginTop:5}}>{this.state.firtData.title}</Text>
-              <Text style={{fontSize:15, fontFamily:'Kanit-Regular',}}>{ this.state.secendData.title }</Text>
+              <Text style={{fontSize:15, fontFamily:'Kanit-Regular'}}>{ this.state.secendData.title }</Text>
           </View>
         </Card>
     );
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems:'center',
         justifyContent:'center',
-        height:100,
         marginTop:10,
       },
 })

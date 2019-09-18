@@ -1,45 +1,22 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, ImageBackground, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StatusBar, ImageBackground, TouchableOpacity, StyleSheet, Dimensions, ScrollView, RefreshControl } from 'react-native';
 import {CalendarList} from 'react-native-calendars';
 import {Container, Card} from 'native-base';
+import moment from 'moment';
 import { createAppContainer, createStackNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 import LeaveSummary from './LeaveSummary';
 import Holiday from './Holiday';
-import AsyncStorage from '@react-native-community/async-storage';
 const width = Dimensions.get('window').width * 0.9;
 const widthtab = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height ;
-
-const data = [
-  {
-    from: "2019-09-01",
-    to: "2019-09-01",
-    days: 0.5,
-    type: "ลาป่วย",
-    status: "Approved",
-  },{
-    from: "2019-09-15",
-    to: "2019-09-15",
-    days: 0.5,
-    type: "ลากิจ",
-    status: "Approved",
-  },{
-    from: "2019-09-08",
-    to: "2019-09-08",
-    days: 0.5,
-    type: "ลาพักผ่อน",
-    status: "Approved",
-  },
-
-]
-
 
 class CalendarPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      refreshing:false,
       isloading:true,
       dataSource:'',
       marked:null
@@ -47,35 +24,62 @@ class CalendarPage extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
-    fetch('http://leave.greenmile.co.th/api/get_calendar')
+    this.fetchDataApi();
+  }
+
+  fetchDataApi = () => {
+    // fetch('http://leave.greenmile.co.th/api/get_calendar')
+    fetch('http://10.0.2.2:8000/api/get_calendar')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
-          isloading:false,
+          isloading: false,
+          refreshing: false,
           dataSource: responseJson.data,
         })
+        this.anotherFunc( responseJson.data );
     })
     .catch((error) => {
       console.error('Eror in page home', error);
     });
-    this.anotherFunc();
   }
 
-  anotherFunc = () => {
+  
+  onRefresh = () => {
+    this.setState({refreshing:true})
+    this.fetchDataApi().then(() => {
+      this.setState({refreshing: false})
+    })
+  } 
+
+  anotherFunc = (data) => {
     let arryDate = [];
     let arryValue = {};
     data.forEach((value, index) => {
-      console.log('index', index)
-      console.log('index', value.from,' and ' , value.to)
-      if(value.from === value.to) {
-         let obj = Object.assign({}, { [value.from] : {periods:[{startingDay: true, endingDay: true, color: this.getColor(value.type)}]}});
+      if(value.date_from === value.date_to) {
+         let obj = Object.assign({}, { [value.date_from] : {periods:[{startingDay: true, endingDay: true, color: this.getColor(value.leave_type)}]}});
          arryDate.push(obj);
-      }
+      }else {
+        let obj1 = Object.assign({}, { [value.date_from] : {periods:[{startingDay: true, endingDay: false, color: this.getColor(value.leave_type)}]}});
+        arryDate.push(obj1);  
+          if((value.leave_days - 2 ) >= 1) {
+            this.betweenDays(value.date_from, value.leave_days, value.leave_type, arryDate);
+          }
+        let obj2 = Object.assign({}, { [value.date_to] : {periods:[{startingDay: false, endingDay: true, color: this.getColor(value.leave_type)}]}});
+        arryDate.push(obj2);
+      }   
     });
     arryValue = Object.assign(...arryDate)
-    console.log('anotherFunc() ', arryValue);
     this.setState({ marked : arryValue});
+  }
+
+  betweenDays = (from, days, type, arryDate) => {
+    for(let i = 1 ; i <= days - 2 ; i++) {
+      let tomorrow = new Date(from);
+      tomorrow = moment(tomorrow).add(i, 'day').format('YYYY-MM-DD');
+      let obj = Object.assign({}, { [tomorrow] : {periods:[{color: this.getColor(type)}]}});
+      arryDate.push(obj);
+    }
   }
 
   getColor = (color) => {
@@ -96,9 +100,15 @@ class CalendarPage extends Component {
           // animated
         />
         <ImageBackground source={require('../../images/background_one.png')}  style={{position:'absolute', left:0, right:0, width:'100%', height:height*0.8}}/>
-        <ScrollView style={{backgroundColor:'transparent'}}>
+        <ScrollView style={{backgroundColor:'transparent'}}
+          refreshControl={
+            <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          /> 
+          }
+        >
             <View style={{paddingHorizontal:10, marginTop:80}}>
-              {console.log('calendar after fetch api: ', this.state.dataSource)}
               <Card style={styles.CalendarCard}>
                   <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                     <CalendarList
@@ -111,13 +121,6 @@ class CalendarPage extends Component {
                       pagingEnabled
                       calendarWidth={width}
                       markedDates={this.state.marked}
-                      // markedDates={{
-                      //   '2019-09-20': {
-                      //     periods: [
-                      //       { startingDay: true, endingDay: false, color: 'red' },
-                      //     ]
-                      //   },
-                      // }}
                       theme = {{
                         todayTextColor: 'green',
                         monthTextColor: 'green',

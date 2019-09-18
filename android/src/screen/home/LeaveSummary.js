@@ -19,20 +19,21 @@ export default class LeaveSummary extends Component {
   }
 
   fetchData =  async () => {
-    let sick, holliday, errand;
+    let sick, holliday, errand; 
     try {
       const token_summary = await AsyncStorage.getItem('user_token');
       console.log('token value: ', token_summary)
       if( token_summary != null ) {
         let token_value = JSON.parse(token_summary);
-        fetch('http://leave.greenmile.co.th/api/get_personal_leave' , {
+        // fetch('http://leave.greenmile.co.th/api/get_personal_leave' , {
+        fetch('http://10.0.2.2:8000/api/get_personal_leave' , {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            "token" : token_value.token, 
+            "token" : token_value, 
           })
         })
         .then((responseJson) => responseJson.json())

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, ImageBackground, Image, Button, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container} from 'native-base'
 import AsyncStorage from '@react-native-community/async-storage';
+import RNRestart from 'react-native-restart';
+
 
 export default class ContentComponent extends Component {
   constructor(props) {
@@ -64,15 +66,11 @@ export default class ContentComponent extends Component {
   async deleteToken () {
     try {
         await AsyncStorage.removeItem('user_token')
-        this.goToLoginPage()
-        // if(this.conditiongetToken() == null) return this.props.navigation.navigate('Login');
+        RNRestart.Restart();
+        return this.props.navigation.navigate('Login');
     } catch(error) {
     alert("error:", error)
     }
-  }
-
-  goToLoginPage() {
-      return this.props.navigation.navigate('Login');
   }
 }
 

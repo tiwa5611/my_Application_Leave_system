@@ -16,7 +16,7 @@ class LeaveOrderPage extends Component {
   }
 
   componentDidMount() {
-    fetch('http://leave.greenmile.co.th/api/get_incoming_leave')
+    fetch('http://10.0.2.2:8000/api/get_incoming_leave')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
@@ -61,7 +61,7 @@ class LeaveOrderPage extends Component {
                       </View>
                       <View style={{flexDirection:'row'}} >  
                         <Text style={styles.textName}>{item.emp_name}</Text>
-                        <Text style={[styles.textName,{ marginLeft:10}]}>({item.status === 'Approved' ? 'อนุมัติ' : 'ไม่อนุมัติ' })</Text>
+                        <Text style={[styles.textName,{ marginLeft:10}]}>({item.status === 'Approved' ? 'อนุมัติ' : 'รออนุมัติ' })</Text>
                       </View>
                     </View>
                   </View>
