@@ -16,7 +16,9 @@ export default class Holiday extends Component {
   componentDidMount() {
     let first;
     let second;
-    fetch('http://leave.greenmile.co.th/api/get_vacations')
+    // fetch('http://leave.greenmile.co.th/api/get_vacations')
+    fetch('http://10.0.2.2:8000/api/get_vacations')
+    // fetch('http://127.0.0.1:8000/api/get_vacations')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({

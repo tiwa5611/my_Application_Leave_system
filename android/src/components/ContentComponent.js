@@ -49,20 +49,6 @@ export default class ContentComponent extends Component {
     );
   }
 
-//   logOut = () => {
-//       let token = this.getToken() 
-//       console.log('Token:', token);
-    //   async removeItemValue(token) {
-    //     try {
-    //       await AsyncStorage.removeItem(token);
-    //       return true;
-    //     }
-    //     catch(exception) {
-    //       return false;
-    //     }
-    //   }
-//   }
-
   async deleteToken () {
     try {
         await AsyncStorage.removeItem('user_token')

@@ -22,6 +22,7 @@ class ProfilePage extends Component {
     try {
       if( JSON.parse(await AsyncStorage.getItem('user_token')) != null) {
         // fetch('http://leave.greenmile.co.th/api/profile' , {
+        // fetch('http://127.0.0.1:8000/api/profile' , {
         fetch('http://10.0.2.2:8000/api/profile' , {
           method: 'POST',
           headers: {
@@ -58,7 +59,6 @@ class ProfilePage extends Component {
           <ImageBackground source={require('../../images/background_one.png')} style={{position:'absolute', width: width,  height:height*0.8}}/>
               <View style={{ paddingHorizontal:10 }}>
               {/* source={require('../../images/background_one.png')} */}
-              { console.log('profile page: ', this.state.dataSouce) }
                 <Card style={styles.cardStyle}>
                   <View style={{marginTop:-130, alignItems:'center' ,backgroundColor: 'transparent' }}>
                     <Image 

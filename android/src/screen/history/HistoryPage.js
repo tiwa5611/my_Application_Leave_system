@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import {Animated, PanResponder, ActivityIndicator, View,Image, Text, StyleSheet, Dimensions, TouchableOpacity, StatusBar, ListView} from 'react-native';
+import {Animated, RefreshControl, ActivityIndicator, View,Image, Text, StyleSheet, Dimensions, TouchableOpacity, StatusBar, ListView} from 'react-native';
 import  {Container, List, Button} from 'native-base';
 import {createAppContainer, createStackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-community/async-storage';
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('screen').height;
 
@@ -13,26 +14,51 @@ class HistoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isRefreshing:false,
       isloading: true, 
       dataSource: '',
       listViewData:''
     };
   }
 
+  onRefresh = async () => {
+    this.setState({isRefreshing: true});
+    // Simulate fetching data from the server
+    // fetch('http://127.0.0.1:8000/api/get_leave', {
+    fetch('http://10.0.2.2:8000/api/get_leave', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        'token': JSON.parse(await AsyncStorage.getItem('user_token')),
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+        this.setState({
+          isRefreshing : false,
+          listViewData : responseJson.data.fill(...responseJson.data).map((value, i) => ({key: `${i}`, type : value}))
+        })
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   componentDidMount() {
-    const count = 100
+    const count_limit = 100
     this.fetchDataApi()
     this.rowSwipeAnimatedValues = {};	
-    {console.log('componentDidMount', this.state.listViewData)}
-    Array(count).fill('').forEach((_, i) => {
+    Array(count_limit).fill('').forEach((_, i) => {
       this.rowSwipeAnimatedValues[`${i}`] = new Animated.Value(0);
     });
   }
 
   fetchDataApi = async () => {
-    console.log('token',JSON.parse(await AsyncStorage.getItem('user_token')))
-    console.log('fetch')
     // fetch('http://leave.greenmile.co.th/api/get_leave')
+    // fetch('http://127.0.0.1:8000/api/get_leave', {
     fetch('http://10.0.2.2:8000/api/get_leave', {
       method: 'POST',
       headers: {
@@ -55,64 +81,64 @@ class HistoryPage extends Component {
     });
   }
 
-  closeRow(rowMap, rowKey) {
-		if (rowMap[rowKey]) {
-			rowMap[rowKey].closeRow();
-		}
-  }
+
   
   editRow =  async (rowMap, rowKey) => {
-    console.log("ID edit Row: ", rowKey);
-    fetch('http://10.0.2.2:8000/api/get_vacation_detail', {
+    //10.0.2.2:8000
+    // fetch('http://127.0.0.1:8000/api/get_leave_detail', {
+    fetch('http://10.0.2.2:8000/api/get_leave_detail', {
       method: 'POST',
       headers: {
         Accept: 'appliction/json',
         'Content-Type' : 'appliction/json'
       },
       body: JSON.stringify({
-        // 'token': JSON.parse(await AsyncStorage.getItem('user_token')),
+        'token': JSON.parse(await AsyncStorage.getItem('user_token')),
         'id': rowKey
       })
     })
     .then((responseJson) => responseJson.json())
     .then((result) => {
-      console.log(result)
-      return this.props.navigation.push('Create', { rowKey, result})
+      return this.props.navigation.push('Edit', { rowKey, result})
     })
     .catch((error) => {
       console.log('error editrow() fetch data: ', error)
     })
   }
 
-	deleteRow = async (rowMap, rowKey) => {
-    console.log("ID: ", rowKey);
-    // async ( rowKey ) => {
-      console.log('token delete function: ', JSON.parse(await AsyncStorage.getItem('user_token')))
-      // fetch('http://leave.greenmile.co.th/api/get_leave')
-      fetch('http://10.0.2.2:8000/api/delete_leave', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify({
-          'id': rowKey
-        })
+  closeRow(rowMap, rowKey){
+		if (rowMap[rowKey]) {
+			rowMap[rowKey].closeRow();
+		}
+  }
+
+	deleteRow = async (rowMap, rowKey, rowId) => {
+    // fetch('http://leave.greenmile.co.th/api/get_leave')
+    // fetch('http://127.0.0.1:8000/api/delete_leave', {
+    fetch('http://10.0.2.2:8000/api/delete_leave', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+        'id': rowId
       })
-      .then((response) => response.json())
-      .then((responseJson) => {
-          if(responseJson.data){
-            alert('ลบข้อมูลสำเร็จ')
-            this.fetchDataApi();
-            this.closeRow(rowMap, rowKey)
-          } else {
-            alert('ผิดพลาด')
-          }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    }
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+        if(responseJson.data){
+          alert('ลบข้อมูลสำเร็จ')
+          this.closeRow(rowMap, rowKey)
+          this.fetchDataApi();
+        } else {
+          alert('ผิดพลาด')
+        }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
 	onRowDidOpen = (rowKey, rowMap) => {
 		console.log('This row opened', rowKey);
@@ -134,15 +160,14 @@ class HistoryPage extends Component {
   
     getIcon = (icon) => {
       switch(icon) {
-        case 'ลาป่วย' : return "plus-circle";
-        case 'ลากิจ' : return "exclamation-triangle";
+        case "ลาป่วย" : return 'plus-circle';
+        case "ลากิจ" : return 'exclamation-triangle';
         default:
-          return "plane"
+          return 'plane'
       }
     }
 
   render() {
-    const {navigate} = this.props.navigation;
     if(this.state.isloading) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
@@ -157,6 +182,7 @@ class HistoryPage extends Component {
           />
           <SwipeListView
             data={this.state.listViewData}
+            keyExtractor={ item => item.id }
             renderItem={ (data ) => (
               <View>
                 <View style={styles.containerListStyle}>
@@ -168,33 +194,50 @@ class HistoryPage extends Component {
                     <Text style={styles.textTyleLeave}>{data.item.type.leave_date}</Text>
                     <Text style={styles.textReason}>{data.item.type.leave_desc}</Text>
                   </View>
-                  <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
-                    <Icon name={ data.item.type.status == 'Send to approve' ? 'info-circle': ''} color={'#8a8787'}/>
-                  </View>
+                  {data.item.type.status == 'Send to approve'? 
+                    <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
+                      <Icon name={ data.item.type.status == 'Send to approve' ? 'info-circle': ''} color={'#8a8787'}/>
+                    </View> : 
+                    <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
+                      <Text>{ data.item.type.status == 'Approved' ? 'อนุมัติ': 'ไม่อนุมัติ'} </Text>
+                    </View>
+                  }
                 </View>
               </View> 
             )}
             renderHiddenItem={ (data, rowMap) => (
-              <View style={{flexDirection:'row-reverse', height:'100%'}}>
-                { console.log(' data in history page :', data.item.type)}
-                <TouchableOpacity
-                  onPress={ () => {
-                    this.editRow(rowMap, data.item.type.id)
-                  }}
-                  activeOpacity={0.5} 
-                  style={[styles.swipeButtonStyle, {backgroundColor: '#8a8787'}]} 
+              data.item.type.status == 'Send to approve'?
+                <View style={{flexDirection:'row-reverse', height:'100%'}}>
+                  <TouchableOpacity
+                    onPress={ _ => { this.editRow(rowMap, data.item.type.id)}}
+                    activeOpacity={0.5} 
+                    style={[styles.swipeButtonStyle, {backgroundColor: '#8a8787'}]} 
+                  >
+                    <Text style={styles.textSwipeStyle}>แก้ไข</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={ _ => this.deleteRow(rowMap, data.item.key, data.item.type.id) }
+                    activeOpacity={0.5} 
+                    style={[styles.swipeButtonStyle, {backgroundColor: 'red'}]}
+                  >
+                    <Text style={styles.textSwipeStyle}>ลบ</Text>
+                  </TouchableOpacity>
+                </View>
+              :
+              <View style={{flexDirection:'row-reverse', height:'100%',}}>
+                <TouchableHighlight style={{flex:1, width:150,  backgroundColor: '#8a8787', alignItems:'center', justifyContent:'center',}} 
                 >
-                  <Text style={styles.textSwipeStyle}>แก้ไข</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  onPress={ () => this.deleteRow(rowMap, data.item.type.id) }
-                  activeOpacity={0.5} 
-                  style={[styles.swipeButtonStyle, {backgroundColor: 'red'}]}
-                >
-                  <Text style={styles.textSwipeStyle}>ลบ</Text>
-                </TouchableOpacity>
+                <Icon name={data.item.type.status === 'Approved'? 'check-circle':'times-circle'} color={'#328e44'} size={width*0.14}/>
+                  {/* <Text style={{color:'white', fontSize:20, fontFamily:'Kanit-Regular',}} >{data.item.type.status === 'Approved'? 'อนุมัติ':'ไม่อนุมัติ'}</Text> */}
+                </TouchableHighlight>
               </View>
             )}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.isRefreshing}
+                onRefresh={this.onRefresh.bind(this)}
+              />
+            }
             disableRightSwipe={true}
             rightOpenValue={-150}
             previewOpenValue={-40}
@@ -207,7 +250,6 @@ class HistoryPage extends Component {
     }
   }
 }
-
 
 export const Separator = () => <View style={styles.separator} />;
 
@@ -227,7 +269,7 @@ export default  History = createAppContainer(createStackNavigator({
           end={{ x: 1, y: 1 }}
           style={{flex:1 ,width:width}}>
           <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:10}} onPress={() => navigation.navigate('Dashboard')}>
+            <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:10}} onPress={() => navigation.navigate('DashboardTabNavigator')}>
               <Image source={require('../../images/back_button.png')} style={{height:30, width:30, marginTop:15}}/>
             </TouchableOpacity>
             <View style={{flex:1 ,justifyContent:'center' ,alignItems:'center'}}>

@@ -11,6 +11,43 @@ import Holiday from './Holiday';
 const width = Dimensions.get('window').width * 0.9;
 const widthtab = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height ;
+const data_test = [
+		{
+			"leave_type": "ลาป่วย",
+			"date_from": "2019-09-11",
+			"date_to": "2019-09-12",
+			"leave_days": 2,
+			"status": "Approved"
+		},
+		{
+			"leave_type": "ลากิจ",
+			"date_from": "2019-09-12",
+			"date_to": "2019-09-13",
+			"leave_days": 2,
+			"status": "Approved"
+		},
+		{
+			"leave_type": "ลาพักผ่อน",
+			"date_from": "2019-09-13",
+			"date_to": "2019-09-14",
+			"leave_days": 2,
+			"status": "Approved"
+		},
+		{
+			"leave_type": "ลาป่วย",
+			"date_from": "2019-09-14",
+			"date_to": "2019-09-17",
+			"leave_days": 4,
+			"status": "Approved"
+		},
+		{
+			"leave_type": "ลาพักผ่อน",
+			"date_from": "2019-09-15",
+			"date_to": "2019-09-17",
+			"leave_days": 3,
+			"status": "Approved"
+		}
+	]
 
 class CalendarPage extends Component {
   constructor(props) {
@@ -19,16 +56,192 @@ class CalendarPage extends Component {
       refreshing:false,
       isloading:true,
       dataSource:'',
-      marked:null
+      marked:null,
+      marktest:null
     };
   }
 
   componentDidMount() {
-    this.fetchDataApi();
+    // this.fetchDataApi();
+    this.markDay();
   }
+
+  markDay = (data1) => {
+    let line = []
+    let arrResult = []
+    let arryValue={}
+    data_test.forEach(element => {
+        if(element.date_from === element.date_to) {
+          if(!arrResult[element.date_from]) {
+            arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:true,color:this.getColor(element.leave_type)}]} 
+          } else {
+            arrResult[element.date_from]['periods'].push({startingDay: true, endingDay: true, color:this.getColor(element.leave_type)})
+          }
+        } else {
+          if((element.leave_days - 2) >= 1) {
+            //leave > three days
+            if(!arrResult[element.date_from]){
+              arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]}
+            } else {
+              arrResult[element.date_from]['periods'].push({startingDay:true, endingDay: false, color:this.getColor(element.leave_type)})
+            }
+            this.betweenDays(element.date_from, element.leave_days, element.leave_type, arrResult)
+            if(!arrResult[element.date_to]) {
+              arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
+            } else {
+              arrResult[element.date_to]['periods'].push({startingDay:false, endingDay: true, color:this.getColor(element.leave_type)})
+            }
+          } else {
+            // Perios two days
+            if(!arrResult[element.date_from]) {
+              arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]} 
+            } else {
+              console.log('key', arrResult[element.date_from]['periods'][0].color)
+              arrResult[element.date_from]['periods'].push({startingDay:true, endingDay:false, color:this.getColor(element.leave_type)})
+            }
+            if(!arrResult[element.date_to]) {
+              arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
+            } else {
+              arrResult[element.date_to]['periods'].push({startingDay:false, endingDay:true, color:this.getColor(element.leave_type)})
+            }
+          } 
+        }
+    });
+    arryValue = Object.assign({}, arrResult)
+    this.setState({marktest:arryValue})
+  }
+
+  betweenDays = (from, days, type, arrResult) => {
+    for(let i = 1 ; i <= days - 2 ; i++) {
+      let tomorrow = new Date(from);
+      tomorrow = moment(tomorrow).add(i, 'day').format('YYYY-MM-DD');
+      if(!arrResult[tomorrow]) {
+        arrResult[tomorrow] = {periods:[({color:this.getColor(type)})]};
+      } else {
+        arrResult[tomorrow]['periods'].push({color:this.getColor(type)});
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // markDay = (data1) => {
+  //   let line = []
+  //   let arrResult = []
+  //   let arryValue={}
+  //   data_test.forEach(element => {
+  //       if(element.date_from === element.date_to) {
+  //         if(!arrResult[element.date_from]) {
+  //           arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:true,color:this.getColor(element.leave_type)}]} 
+  //         } else {
+  //           arrResult[element.date_from]['periods'].push({startingDay: true, endingDay: true, color:this.getColor(element.leave_type)})
+  //         }
+  //       } else {
+  //         if((element.leave_days - 2) >= 1) {
+  //           //leave > three days
+  //           if(!arrResult[element.date_from]){
+              
+  //             arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]}
+  //           } else {
+  //             arrResult[element.date_from]['periods'].push({startingDay:true, endingDay: false, color:this.getColor(element.leave_type)})
+  //           }
+  //           this.betweenDays(element.date_from, element.leave_days, element.leave_type, arrResult)
+  //           if(!arrResult[element.date_to]) {
+  //             arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
+  //           } else {
+  //             arrResult[element.date_to]['periods'].push({startingDay:false, endingDay: true, color:this.getColor(element.leave_type)})
+  //           }
+  //         } else {
+  //           // Perios two days
+  //           if(!arrResult[element.date_from]) {
+  //             arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]} 
+  //             line.push(true)
+  //           } else {
+  //             arrResult[element.date_from]['periods'].push({startingDay:true, endingDay:false, color:this.getColor(element.leave_type)})
+  //           }
+  //           if(!arrResult[element.date_to]) {
+  //             arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
+  //           } else {
+  //             arrResult[element.date_to]['periods'].push({startingDay:false, endingDay:true, color:this.getColor(element.leave_type)})
+  //           }
+  //         } 
+  //       }
+  //   });
+  //   arryValue = Object.assign({}, arrResult)
+  //   this.setState({marktest:arryValue})
+  // }
+
+  // betweenDays = (from, days, type, arrResult) => {
+  //   for(let i = 1 ; i <= days - 2 ; i++) {
+  //     let tomorrow = new Date(from);
+  //     tomorrow = moment(tomorrow).add(i, 'day').format('YYYY-MM-DD');
+  //     console.log('test tomorrow: ',tomorrow)
+  //     if(!arrResult[tomorrow]) {
+  //       arrResult[tomorrow] = {periods:[({color:this.getColor(type)})]};
+  //     } else {
+  //       arrResult[tomorrow]['periods'].push({color:this.getColor(type)});
+  //     }
+  //   }
+  //   console.log('days in function: ', arrResult) 
+  // }
 
   fetchDataApi = () => {
     // fetch('http://leave.greenmile.co.th/api/get_calendar')
+    // console.log('fetchData Function')
     fetch('http://10.0.2.2:8000/api/get_calendar')
     .then((response) => response.json())
     .then((responseJson) => {
@@ -37,7 +250,7 @@ class CalendarPage extends Component {
           refreshing: false,
           dataSource: responseJson.data,
         })
-        this.anotherFunc( responseJson.data );
+        this.markDay( responseJson.data );
     })
     .catch((error) => {
       console.error('Eror in page home', error);
@@ -47,40 +260,10 @@ class CalendarPage extends Component {
   
   onRefresh = () => {
     this.setState({refreshing:true})
-    this.fetchDataApi().then(() => {
-      this.setState({refreshing: false})
-    })
+    this.fetchDataApi()
   } 
 
-  anotherFunc = (data) => {
-    let arryDate = [];
-    let arryValue = {};
-    data.forEach((value, index) => {
-      if(value.date_from === value.date_to) {
-         let obj = Object.assign({}, { [value.date_from] : {periods:[{startingDay: true, endingDay: true, color: this.getColor(value.leave_type)}]}});
-         arryDate.push(obj);
-      }else {
-        let obj1 = Object.assign({}, { [value.date_from] : {periods:[{startingDay: true, endingDay: false, color: this.getColor(value.leave_type)}]}});
-        arryDate.push(obj1);  
-          if((value.leave_days - 2 ) >= 1) {
-            this.betweenDays(value.date_from, value.leave_days, value.leave_type, arryDate);
-          }
-        let obj2 = Object.assign({}, { [value.date_to] : {periods:[{startingDay: false, endingDay: true, color: this.getColor(value.leave_type)}]}});
-        arryDate.push(obj2);
-      }   
-    });
-    arryValue = Object.assign(...arryDate)
-    this.setState({ marked : arryValue});
-  }
 
-  betweenDays = (from, days, type, arryDate) => {
-    for(let i = 1 ; i <= days - 2 ; i++) {
-      let tomorrow = new Date(from);
-      tomorrow = moment(tomorrow).add(i, 'day').format('YYYY-MM-DD');
-      let obj = Object.assign({}, { [tomorrow] : {periods:[{color: this.getColor(type)}]}});
-      arryDate.push(obj);
-    }
-  }
 
   getColor = (color) => {
     switch(color) {
@@ -103,56 +286,82 @@ class CalendarPage extends Component {
         <ScrollView style={{backgroundColor:'transparent'}}
           refreshControl={
             <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          /> 
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            /> 
           }
         >
-            <View style={{paddingHorizontal:10, marginTop:80}}>
-              <Card style={styles.CalendarCard}>
-                  <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                    <CalendarList
-                      style={{
-                        width,
-                        overflow: 'hidden',
-                        marginTop:5
-                      }}
-                      horizontal
-                      pagingEnabled
-                      calendarWidth={width}
-                      markedDates={this.state.marked}
-                      theme = {{
-                        todayTextColor: 'green',
-                        monthTextColor: 'green',
-                        textSectionTitleColor: 'rgba(0, 128, 0, 0.5)',
-                        textMonthFontFamily: 'Kanit-Regular',
-                        textMonthFontSize: (width * 0.06),
-                        textDayFontFamily: 'Kanit-Regular',
-                        textDayHeaderFontFamily:'Kanit-Regular',
-                        'stylesheet.calendar.header': {
-                          week: {
-                            marginTop: 5,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            marginTop:-5
-                          },
-                          ContainerStyle:{
-                            borderRadius:15
-                          }
+          <View style={{paddingHorizontal:10, marginTop:80}}>
+            <Card style={styles.CalendarCard}>
+              {/* {console.log('martest data: ', this.state.marktest)} */}
+              {/* {console.log('mared data: ', this.state.marked)} */}
+                <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                  <CalendarList
+                    style={{
+                      width,
+                      overflow: 'hidden',
+                      marginTop:5,
+                      paddingHorizontal:1,
+                    }}
+                    horizontal
+                    pagingEnabled
+                    calendarWidth={width}
+                    markingType={'multi-period'}
+                    // markedDates={this.state.marktest}
+                    markedDates={{
+                      '2019-09-10': {
+                        periods: [
+                          { startingDay: true, endingDay: false, color: '#5f9ea0', xxx:true },
+                          // { startingDay: true, endingDay: false, color: '#ffa500' },
+                          // { startingDay: true, endingDay: false, color: '#f0e68c' },
+                        ]
+                      },
+                      '2019-09-11': {
+                        periods: [
+                          { startingDay: false, endingDay: true, color: '#5f9ea0' },
+                          { startingDay: true, endingDay: false, color: '#ffa500' },
+                          { color: 'transparent' },
+                        ]
+                      },
+                      '2019-09-12': {
+                        periods: [
+                          { color: 'transparent' },
+                          { startingDay: false, endingDay: true, color: '#ffa500' },
+                          { color: 'transparent' },
 
+                        ]
+                      },
+                    }}
+                    theme = {{
+                      todayTextColor: 'green',
+                      monthTextColor: 'green',
+                      textSectionTitleColor: 'rgba(0, 128, 0, 0.5)',
+                      textMonthFontFamily: 'Kanit-Regular',
+                      textMonthFontSize: (width * 0.06),
+                      textDayFontFamily: 'Kanit-Regular',
+                      textDayHeaderFontFamily:'Kanit-Regular',
+                      'stylesheet.calendar.header': {
+                        week: {
+                          marginTop: 5,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          marginTop:-5,
+                        },
+                        ContainerStyle:{
+                          borderRadius:15,
                         }
-                      }}
-                      markingType={'multi-period'}
-                    />
-                  </View>
-                  <TouchableOpacity activeOpacity={0.5} onPress={() => this.props.navigation.navigate("LeaveOrder")} >
-                     <Text style={ styles.textOrderleave }>รายการลาของพนักงาน</Text>
-                  </TouchableOpacity>
-              </Card>
-              <Holiday/>
-              <LeaveSummary/>
-            </View>
-          </ScrollView>
+                      }
+                    }}
+                  />
+                </View>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => this.props.navigation.navigate("LeaveOrder")} >
+                    <Text style={ styles.textOrderleave }>รายการลาของพนักงาน</Text>
+                </TouchableOpacity>
+            </Card>
+            <Holiday/>
+            <LeaveSummary/>
+          </View>
+        </ScrollView>
       </Container>
     );
   }

@@ -16,6 +16,7 @@ class LeaveOrderPage extends Component {
   }
 
   componentDidMount() {
+    // fetch('http://127.0.0.1:8000/api/get_incoming_leave')
     fetch('http://10.0.2.2:8000/api/get_incoming_leave')
     .then((response) => response.json())
     .then((responseJson) => {

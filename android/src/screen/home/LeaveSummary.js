@@ -26,6 +26,7 @@ export default class LeaveSummary extends Component {
       if( token_summary != null ) {
         let token_value = JSON.parse(token_summary);
         // fetch('http://leave.greenmile.co.th/api/get_personal_leave' , {
+        // fetch('http://127.0.0.1:8000/api/get_personal_leave' , {
         fetch('http://10.0.2.2:8000/api/get_personal_leave' , {
           method: 'POST',
           headers: {
@@ -38,7 +39,7 @@ export default class LeaveSummary extends Component {
         })
         .then((responseJson) => responseJson.json())
         .then((result) => {
-          console.log('Data fetch to LeaveSummary:', result.data)
+          // console.log('Data fetch to LeaveSummary:', result.data)
           this.setState({ 
             dataSource: result.data 
           })

@@ -89,28 +89,37 @@ export default class login extends Component {
 
   clickListener = () => {
     // fetch('http://leave.greenmile.co.th/api/login', {
-    fetch('http://10.0.2.2:8000/api/login', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        "username": this.state.username, 
-        "password": this.state.password,
+    const {username, password} = this.state
+    if( (username === '' ||  password === '') ) {
+      alert('กรุณากรอก username and password')
+    } else {
+      fetch('http://10.0.2.2:8000/api/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          "username": this.state.username, 
+          "password": this.state.password,
+        })
+      }).then((response) => response.json())
+      .then((result) => { 
+          if(result.data != null) {
+            this.saveToken(result.data);
+          } else {
+            alert('ชื่อผู้ใช้ไม่ถูกต้อง')
+            this.setState({
+              username:'',
+              password:''
+            })
+          }
       })
-    }).then((response) => response.json())
-    .then((result) => { 
-        if(result.data != null) {
-          this.saveToken(result.data);
-        } else {
-          alert('username or password fail.')
-        }
-    })
-    .catch( (error) => {
-      console.log("-------- error ------- " + error);
-      alert("result:" + error)
-    });
+      .catch( (error) => {
+        console.log("-------- error ------- " + error);
+        alert("result:" + error)
+      });
+    }
   }
 
   saveToken = ( token ) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert, Text, StatusBar, TextInput, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions} from 'react-native';
+import {Text, StatusBar, TextInput, View, StyleSheet, TouchableOpacity, ImageBackground, Image, Dimensions, Alert} from 'react-native';
 import {Container, Card} from 'native-base';
 import moment from 'moment';
 import DatePicker from 'react-native-datepicker';
@@ -14,20 +14,23 @@ let status_tap = false
 class CreatePage extends Component {
   constructor(props) {
     // leave_date_type = leave_period
+    console.log('state editPage');
     var currentDay = new Date().getDate();
     var currentMonth = new Date().getMonth()+1;
     var currentYear = new Date().getFullYear();
     let current = currentDay+'/'+currentMonth+'/'+currentYear;
     super(props);
     this.state = {
+      status_edit: false,
+      id_edit: 0 ,
+      dataSourceEdit:'',
       date_form : current,
       date_to : current,
       selectedIndex: 2,
       selectedIndexPeriod:2,
       leave_type:'ลาพักร้อน',
       leave_period:'บ่าย',
-      textReason:'',
-      disable:[]
+      textReason:''
     }
     this.updateIndex = this.updateIndex.bind(this)
     this.updateIndexPeriod = this.updateIndexPeriod.bind(this)
@@ -51,32 +54,43 @@ class CreatePage extends Component {
     this.setState({selectedIndexPeriod})
   }
 
-  componentDidMount(){
-  }
-
-  refreshPage = () => {
-    console.log('Call refreshPage')
-    this.setState({
-      date_form : current,
-      date_to : current,
-      textReason:''
-    })
-  }
-
-  handleSubmitRefresh = (event) => {
-    event.preventDefault();
-    console.log('Submitted!');
-  }
-
-  comPareDate = (dataForm, dateTo) => {
-    if(dataForm < dateTo){
-      this.setState({selectedIndexPeriod:0})
-      return true
+  setIndexTypeFormEdit (type) {
+    switch(type) {
+      case 'ลาป่วย' : return 0;
+      case 'ลากิจ' : return 1;
+      case 'ลาพักผ่อน' : return 2;
+      default: 
+        return 0;
     }
-    return false
   }
 
+  setIndexPeriodFormEdit (dateType) {
+      switch(dateType) {
+        case 'ทั้งวัน' : return 0;
+        case 'เข้า' : return 1;
+        case 'บ่าย' : return 2;
+        default:
+          return 0;
+      }
+  }
 
+  componentDidMount(){
+    // const { navigation } = this.props
+    // const keyid = navigation.getParam('keyId', 'Not found Key id')
+    if (this.props.navigation.state.params != null) {
+      this.setState({
+        status_edit:true,
+        idEdit: this.props.navigation.state.params.rowKey,
+        date_form: this.props.navigation.state.params.result.data.leave_datefrom,
+        date_to : this.props.navigation.state.params.result.data.leave_dateto,
+        selectedIndex : this.setIndexTypeFormEdit(this.props.navigation.state.params.result.data.leave_type),
+        selectedIndexPeriod: this.setIndexPeriodFormEdit(this.props.navigation.state.params.result.data.leave_date_type),
+        leave_period: this.props.navigation.state.params.result.data.leave_date_type,
+        leave_type: this.props.navigation.state.params.result.data.leave_type,
+        textReason: this.props.navigation.state.params.result.data.leave_note,
+      })
+    }
+  }
 
   render() {    
       const buttons = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน'];
@@ -92,7 +106,7 @@ class CreatePage extends Component {
           <Image source={require('../../images/screen_create.png')} style={styles.imageView} />
             <ScrollView>
               <View style={{flexDirection:'row', paddingHorizontal:width/12, justifyContent:'space-between', marginTop: 20,}}>
-                <Text style={styles.textTitle}>แบบฟอร์มใบลา</Text>
+                <Text style={styles.textTitle}>แบบฟอร์มแก้ใขใบลา</Text>
               </View>
               <View style={{ paddingHorizontal:10, marginTop:10}}>
                 <Card style={styles.cardStyle}>
@@ -130,9 +144,7 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_form) => {
-                              this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
-                            }}
+                            onDateChange={(date_form) => {this.setState({date_form: date_form})}}
                           />
                         </View>
                         <View style={styles.styleBloclTextTo}>
@@ -142,7 +154,7 @@ class CreatePage extends Component {
                         <View  style={{flex:1, flexDirection:'row', justifyContent:'flex-end'}}>
                           <DatePicker
                             style={{width:width/3, marginRight: -10,}}
-                            date={ this.state.date_to }
+                            date={this.state.date_to}
                             androidMode={'spinner'}
                             format={'DD/MM/YYYY'}
                             customStyles={{
@@ -155,8 +167,8 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_to) => { this.state.date_form !== date_to? this.setState({date_to: date_to , disable:[1,2], selectedIndexPeriod:0}):this.setState({date_to: date_to, disable:[]})}}
-                          />  
+                            onDateChange={(date_to) => {this.setState({date_to: date_to}) }}
+                          />
                         </View>
                       </View>
                     </View>
@@ -167,7 +179,6 @@ class CreatePage extends Component {
                         selectedIndex={selectedIndexPeriod}
                         onPress={this.updateIndexPeriod}
                         buttons={buttonsPeriod}
-                        disabled={this.state.disable}
                         textStyle={{fontFamily:'Kanit-Regular'}}
                         selectedButtonStyle={{ backgroundColor:'#72b552'}}
                         selectedTextStyle = {{ color: 'white' , fontFamily:'Kanit-Regular' }}
@@ -206,12 +217,11 @@ class CreatePage extends Component {
   }
 
   hadleSubmit = async () => {
-    if(this.state.textReason === '') return Alert.alert('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบ',[{text:'ตกลง',style:'OK'}])
     try {
       let token = await AsyncStorage.getItem('user_token');
       let token_value = JSON.parse(token);
-      // fetch('http://127.0.0.1:8000/api/save_leave', {
-      fetch('http://10.0.2.2:8000/api/save_leave', {
+      // fetch('http://127.0.0.1:8000/api/update_leave', {
+        fetch('http://10.0.2.2:8000/api/update_leave', {
       // fetch('http://leave.greenmile.co.th/api/save_leave' , {
         method: 'POST',
         headers: {
@@ -220,23 +230,26 @@ class CreatePage extends Component {
         },
         body: JSON.stringify({
           "token" : token_value,
+          "ID" : this.state.idEdit,
           "LEAVE_DATEFROM" : moment(this.state.date_form, 'DD/MM/YYYY').format("YYYY-MM-DD"), 
           "LEAVE_DATETO" : moment(this.state.date_to, 'DD/MM/YYYY').format("YYYY-MM-DD"), 
           "LEAVE_TYPE" : this.state.leave_type, 
           "LEAVE_NOTE" : this.state.textReason, 
-          "LEAVE_DATE_TYPE" : this.state.leave_period,
+          "LEAVE_DATE_TYPE" : this.state.leave_period, 
         })
       })
       .then((responseJson) => (responseJson.json()))
       .then((result) => {
         if(result.data) {
-          alert('บันทึกข้อมูลสำเร็จ')
-          this.setState({
-            date_form:this.current,
-            date_to:this.current,
-            textReason:''
-          })
+          // Alert.alert(
+          //   'บันทึกข้อมูลสำเร็จ',
+          //   [
+          //     {text: 'ตกลง', onPress: () => {return this.props.navigation.navigate('History')}},
+          //   ]
+          // )
+          return this.props.navigation.navigate('History');
         } else {
+          console.log('response from serve fail: ', result);
           alert('ผิดพลาด')
         }
       })
@@ -259,10 +272,8 @@ export default CreateScreen = createAppContainer(createStackNavigator({
     return {
       headerTransparent:true,
       headerLeft:
-        <TouchableOpacity style={{marginTop:30, marginLeft:15 ,marginBottom:10}}>
-          <Icon name="bars" size={30} color={'white'} style={{marginTop:15}}
-            onPress={ () => navigation.openDrawer() }
-          />
+        <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:10}} onPress={() => navigation.navigate('History')}>
+          <Image source={require('../../images/back_button.png')} style={{height:30, width:30, marginTop:15}}/>
         </TouchableOpacity>
     };
   }

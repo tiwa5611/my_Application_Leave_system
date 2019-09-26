@@ -78,20 +78,24 @@ class App extends Component {
 
 	deleteRow(rowMap, rowKey) {
 		this.closeRow(rowMap, rowKey);
-		const newData = [...this.state.listViewData];
-		const prevIndex = this.state.listViewData.findIndex(item => item.key === rowKey);
-		newData.splice(prevIndex, 1);
-		this.setState({listViewData: newData});
+		// const newData = [...this.state.listViewData];
+		// console.log('new data: ', newData);
+		// const prevIndex = this.state.listViewData.findIndex(item => item.key === rowKey);
+		// console.log('prevIndex: ', prevIndex);
+		// console.log('rowKey: ', rowKey)
+		// newData.splice(prevIndex, 1);
+		// console.log('newData.splice: ', newData);
+		// this.setState({listViewData: newData});
 	}
 
-	deleteSectionRow(rowMap, rowKey) {
-		this.closeRow(rowMap, rowKey);
-		var [section, row] = rowKey.split('.');
-		const newData = [...this.state.sectionListData];
-		const prevIndex = this.state.sectionListData[section].data.findIndex(item => item.key === rowKey);
-		newData[section].data.splice(prevIndex, 1);
-		this.setState({sectionListData: newData});
-	}
+	// deleteSectionRow(rowMap, rowKey) {
+	// 	this.closeRow(rowMap, rowKey);
+	// 	var [section, row] = rowKey.split('.');
+	// 	const newData = [...this.state.sectionListData];
+	// 	const prevIndex = this.state.sectionListData[section].data.findIndex(item => item.key === rowKey);
+	// 	newData[section].data.splice(prevIndex, 1);
+	// 	this.setState({sectionListData: newData});
+	// }
 
 	onRowDidOpen = (rowKey, rowMap) => {
 		console.log('This row opened', rowKey);
@@ -106,8 +110,8 @@ class App extends Component {
 		// this.fetchDataApi();
 		return (
 			<View style={styles.container}>
-				{console.log('ListViewData ------>', this.state.listViewData)}
-				{console.log('DataSource  ------>', this.state.dataSource)}
+				{/* {console.log('ListViewData ------>', this.state.listViewData)}
+				{console.log('DataSource  ------>', this.state.dataSource)} */}
                 <SwipeListView
                     data={this.state.listViewData}
                     renderItem={ (data, rowMap) => (
@@ -127,7 +131,7 @@ class App extends Component {
                                 <Text style={styles.backTextWhite}>Close</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]} onPress={ _ => this.deleteRow(rowMap, data.item.key) }>
-                                <Animated.View
+                                {/* <Animated.View
                                     style={[
                                         styles.trash,
                                         {
@@ -145,7 +149,7 @@ class App extends Component {
                                     ]}
                                 >
                                     <Image source={require('../images/favicon.png')} style={styles.trash} />
-                                </Animated.View>
+                                </Animated.View> */}
                             </TouchableOpacity>
                         </View>
                     )}
