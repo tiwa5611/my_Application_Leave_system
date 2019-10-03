@@ -67,50 +67,83 @@ class CalendarPage extends Component {
   }
 
   markDay = (data1) => {
-    let line = []
+    let line = 0
     let arrResult = []
-    let arryValue={}
-    data_test.forEach(element => {
-        if(element.date_from === element.date_to) {
-          if(!arrResult[element.date_from]) {
-            arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:true,color:this.getColor(element.leave_type)}]} 
+    let arryValue=[]
+    data_test.forEach( element => {
+        // console.log('line at: ', (typeof arrResult[element.date_from] !== 'undefined')); 
+        if(arrResult[element.date_from])  {
+          line = this.getlineCalendat(arrResult[element.date_from]);
+          console.log('line in if condition: ', line)
+
+        }
+
+        let diff = moment(element.date_from).diff(moment(element.date_to), 'days')
+        for ( let i = 0 ; i <= (diff*(-1)) ; i++ ) {
+          if ( i === 0 ) {
+            if( !arrResult[element.date_from] ){
+              console.log('condition if', element.date_from)
+              arrResult[element.date_from] =  { periods: [line].push({ startingDay:true , endingDay: false, color:this.getColor(element.leave_type) }) }
+            } else {
+              console.log('condition else');
+              let dateTo = moment(element.date_from).add(i, 'day').format('YYYY-MM-DD');
+              arrResult[dateTo]['periods'][line] = { startingDay:( i == 0 ) ? true : false , endingDay: ( diff == 0 || i == diff ) ? true : false, color:this.getColor(element.leave_type) }
+            }
           } else {
-            arrResult[element.date_from]['periods'].push({startingDay: true, endingDay: true, color:this.getColor(element.leave_type)})
+            let dateTo = moment(element.date_from).add(i, 'day').format('YYYY-MM-DD');
+            if( !arrResult[dateTo] ){
+              console.log('condition if i != 0', dateTo)
+              arrResult[dateTo] =  { periods: [line].push( { startingDay:( i == 0 ) ? true : false , endingDay: true, color:this.getColor(element.leave_type) }) }
+            } else {
+              console.log('condition else i != 0');
+              arrResult[dateTo]['periods'][line] = { startingDay:( i == 0 ) ? true : false , endingDay: ( diff == 0 || i == diff ) ? true : false, color:this.getColor(element.leave_type) }
+            }
           }
-        } else {
-          if((element.leave_days - 2) >= 1) {
-            //leave > three days
-            if(!arrResult[element.date_from]){
-              arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]}
-            } else {
-              arrResult[element.date_from]['periods'].push({startingDay:true, endingDay: false, color:this.getColor(element.leave_type)})
-            }
-            this.betweenDays(element.date_from, element.leave_days, element.leave_type, arrResult)
-            if(!arrResult[element.date_to]) {
-              arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
-            } else {
-              arrResult[element.date_to]['periods'].push({startingDay:false, endingDay: true, color:this.getColor(element.leave_type)})
-            }
-          } else {
-            // Perios two days
-            if(!arrResult[element.date_from]) {
-              arrResult[element.date_from] = { periods:[{startingDay:true, endingDay:false, color:this.getColor(element.leave_type)}]} 
-            } else {
-              console.log('key', arrResult[element.date_from]['periods'][0].color)
-              arrResult[element.date_from]['periods'].push({startingDay:true, endingDay:false, color:this.getColor(element.leave_type)})
-            }
-            if(!arrResult[element.date_to]) {
-              arrResult[element.date_to] = { periods:[{startingDay:false, endingDay:true, color:this.getColor(element.leave_type)}]} 
-            } else {
-              arrResult[element.date_to]['periods'].push({startingDay:false, endingDay:true, color:this.getColor(element.leave_type)})
-            }
-          } 
+          console.log('--------------------------');
+          console.log('loop at: ', i)
+          console.log('line ', line)
+          console.log('arryValue: ',arrResult)
+          console.log('--------------------------');
         }
     });
-    arryValue = Object.assign({}, arrResult)
-    this.setState({marktest:arryValue})
+    
+    // arryValue = Object.assign({}, arrResult)
+    console.log('arryValue: ', arrResult)
+    console.log('llllll')
+    // this.setState({marktest:arryValue})
   }
 
+  getlineCalendat = (array) => {
+    let line = 0 ;
+    let loop = true ; 
+    while(loop) {
+      console.log('getlineCalendat', (typeof array['periods'][line]))
+      if(typeof array['periods'][line] === 'undefined'){
+        loop = false
+      } else {
+        line++;
+      }
+    }
+    return line
+  } 
+
+  aa = () => {
+    arrResult.forEach(element => {
+      for(let i = 0 ; i < arrResult.length ; i++ ) {
+        console.log('i: ', i)
+        console.log('arrResult[i]: ', arrResult[i])
+          if(arrResult[i] == undefined ) {
+            console.log('if')
+            arryValue[i] = 'transparent';
+          } else {
+            console.log('else')
+            arryValue[i] = element[i]
+          }
+        console.log('arryValue[i]: ', arryValue[i])
+
+      }
+    });
+  }
   betweenDays = (from, days, type, arrResult) => {
     for(let i = 1 ; i <= days - 2 ; i++) {
       let tomorrow = new Date(from);
@@ -309,21 +342,32 @@ class CalendarPage extends Component {
                     markingType={'multi-period'}
                     // markedDates={this.state.marktest}
                     markedDates={{
-                      '2019-09-10': {
+                      '2019-10-14': {
                         periods: [
-                          { startingDay: true, endingDay: false, color: '#5f9ea0', xxx:true },
-                          // { startingDay: true, endingDay: false, color: '#ffa500' },
-                          // { startingDay: true, endingDay: false, color: '#f0e68c' },
+                          { startingDay: true, endingDay: false, color: '#5f9ea0' },
                         ]
                       },
-                      '2019-09-11': {
+                      '2019-10-15': {
                         periods: [
                           { startingDay: false, endingDay: true, color: '#5f9ea0' },
                           { startingDay: true, endingDay: false, color: '#ffa500' },
-                          { color: 'transparent' },
                         ]
                       },
-                      '2019-09-12': {
+                      '2019-10-16': {
+                        periods: [
+                          { startingDay: true, endingDay: false, color: '#ffa500' },
+                          { startingDay: false, endingDay: true, color: '#ffa500' },
+
+                        ]
+                      },
+                      '2019-10-17': {
+                        periods: [
+                          { startingDay: false, endingDay: true, color: '#ffa500' },
+                          { color: 'transparent' },
+
+                        ]
+                      },
+                      '2019-10-18': {
                         periods: [
                           { color: 'transparent' },
                           { startingDay: false, endingDay: true, color: '#ffa500' },
@@ -331,6 +375,23 @@ class CalendarPage extends Component {
 
                         ]
                       },
+                      '2019-10-19': {
+                        periods: [
+                          { color: 'transparent' },
+                          { startingDay: false, endingDay: true, color: '#ffa500' },
+                          { color: 'transparent' },
+
+                        ]
+                      },
+                      '2019-09-20': {
+                        periods: [
+                          { color: 'transparent' },
+                          { startingDay: false, endingDay: true, color: '#ffa500' },
+                          { color: 'transparent' },
+
+                        ]
+                      },
+                      
                     }}
                     theme = {{
                       todayTextColor: 'green',

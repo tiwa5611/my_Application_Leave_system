@@ -22,12 +22,10 @@ export default class login extends Component {
   render() {
 
     this.conditiongetToken().then(( token ) => {
-      console.log('token page login: ', token);
       if(token != null) {
         return this.props.navigation.navigate('Dashboard')
       } else {
         this.setState({isLoad:true})
-        console.log('Not have token');
       }
     }).catch((error) =>{
       alert("error in page login:", error);
