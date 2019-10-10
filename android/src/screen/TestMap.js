@@ -55,20 +55,15 @@ export default class TestMap extends Component {
 
 
 testMapObject = () => {
-    let arrResult = []
+	let arrResult = []
+	let periods = []
     data.forEach(element => {
-        if(element.date_from === element.date_to) {
-            console.log('arrResult',arrResult[element.date_from])
-            if(!arrResult[element.date_from]) {
-                arrResult[element.date_from] = { period:[{startingDay:true, endingDay:true,color:'red'}]} 
-            } else {
-                arrResult[element.date_from]['period'].push({start: true, end: true})
-            }
-        } else {
-            
-        }
+		periods.push(element)
+		// for ( let i in element ) {
+		// 	console.log('i', periods[i] = element[i])
+		// }
     });
-    console.log('Key Array: ', arrResult)
+    console.log('Key Array: ', periods);
 }
   
 
