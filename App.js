@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import AppContainer from './android/src/components/AppContainerComponent';
-import  ModalExample  from './android/src/screen/home';
+import  ModalExample  from './android/src/Modal/ModalAlert';
 class App extends Component {
   render() {
     // return <AppContainer/>;

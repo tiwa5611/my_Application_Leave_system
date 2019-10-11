@@ -30,7 +30,8 @@ class CreatePage extends Component {
       selectedIndexPeriod:2,
       leave_type:'ลาพักร้อน',
       leave_period:'บ่าย',
-      textReason:''
+      textReason:'',
+      disable:[]
     }
     this.updateIndex = this.updateIndex.bind(this)
     this.updateIndexPeriod = this.updateIndexPeriod.bind(this)
@@ -75,8 +76,6 @@ class CreatePage extends Component {
   }
 
   componentDidMount(){
-    // const { navigation } = this.props
-    // const keyid = navigation.getParam('keyId', 'Not found Key id')
     if (this.props.navigation.state.params != null) {
       this.setState({
         status_edit:true,
@@ -88,8 +87,17 @@ class CreatePage extends Component {
         leave_period: this.props.navigation.state.params.result.data.leave_date_type,
         leave_type: this.props.navigation.state.params.result.data.leave_type,
         textReason: this.props.navigation.state.params.result.data.leave_note,
+        disable: (this.props.navigation.state.params.result.data.leave_datefrom !== this.props.navigation.state.params.result.data.leave_dateto)?[1, 2] : []
       })
     }
+  }
+
+  comPareDate = (dataForm, dateTo) => {
+    if(dataForm < dateTo){
+      this.setState({selectedIndexPeriod:0})
+      return true
+    }
+    return false
   }
 
   render() {    
@@ -144,7 +152,9 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_form) => {this.setState({date_form: date_form})}}
+                            onDateChange={(date_form) => {
+                              this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
+                            }}
                           />
                         </View>
                         <View style={styles.styleBloclTextTo}>
@@ -167,7 +177,7 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_to) => {this.setState({date_to: date_to}) }}
+                            onDateChange={(date_to) => { this.state.date_form !== date_to? this.setState({date_to: date_to , disable:[1,2], selectedIndexPeriod:0}):this.setState({date_to: date_to, disable:[]})}}
                           />
                         </View>
                       </View>
@@ -179,6 +189,7 @@ class CreatePage extends Component {
                         selectedIndex={selectedIndexPeriod}
                         onPress={this.updateIndexPeriod}
                         buttons={buttonsPeriod}
+                        disabled={this.state.disable}
                         textStyle={{fontFamily:'Kanit-Regular'}}
                         selectedButtonStyle={{ backgroundColor:'#72b552'}}
                         selectedTextStyle = {{ color: 'white' , fontFamily:'Kanit-Regular' }}

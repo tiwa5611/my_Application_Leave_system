@@ -63,14 +63,13 @@ class CalendarPage extends Component {
   }
 
   componentDidMount() {
-    // this.fetchDataApi();                   
-    this.markDay();
+    this.fetchDataApi();                   
   }
 
   markDay = (data1) => {
-    let arrResult=[]
-    let result= [];
-    data_test.forEach( element => {
+    let arrResult = []
+    let result = [];
+    data1.forEach( element => {
       let line = this.getlineCalendar(arrResult[element.date_from])
       let dateDiff = moment(element.date_from).diff(moment(element.date_to), 'days')
       let diff = dateDiff*(-1)
@@ -136,7 +135,6 @@ class CalendarPage extends Component {
 
   fetchDataApi = () => {
     // fetch('http://leave.greenmile.co.th/api/get_calendar')
-    // console.log('fetchData Function')
     fetch('http://10.0.2.2:8000/api/get_calendar')
     .then((response) => response.json())
     .then((responseJson) => {
