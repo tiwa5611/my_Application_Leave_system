@@ -24,8 +24,8 @@ class HistoryPage extends Component {
   onRefresh = async () => {
     this.setState({isRefreshing: true});
     // Simulate fetching data from the server
-    // fetch('http://127.0.0.1:8000/api/get_leave', {
-    fetch('http://10.0.2.2:8000/api/get_leave', {
+    fetch('http://leaveuat.greenmile.co.th/api/get_leave', {
+    // fetch('http://10.0.2.2:8000/api/get_leave', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -57,9 +57,9 @@ class HistoryPage extends Component {
   }
 
   fetchDataApi = async () => {
-    // fetch('http://leave.greenmile.co.th/api/get_leave')
-    // fetch('http://127.0.0.1:8000/api/get_leave', {
-    fetch('http://10.0.2.2:8000/api/get_leave', {
+    // fetch('http://leaveuat.greenmile.co.th/api/get_leave')
+    fetch('http://leaveuat.greenmile.co.th/api/get_leave', {
+    // fetch('http://10.0.2.2:8000/api/get_leave', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -86,7 +86,7 @@ class HistoryPage extends Component {
   editRow =  async (rowMap, rowKey) => {
     //10.0.2.2:8000
     // fetch('http://127.0.0.1:8000/api/get_leave_detail', {
-    fetch('http://10.0.2.2:8000/api/get_leave_detail', {
+    fetch('http://leaveuat.greenmile.co.th/api/get_leave_detail', {
       method: 'POST',
       headers: {
         Accept: 'appliction/json',
@@ -115,7 +115,7 @@ class HistoryPage extends Component {
 	deleteRow = async (rowMap, rowKey, rowId) => {
     // fetch('http://leave.greenmile.co.th/api/get_leave')
     // fetch('http://127.0.0.1:8000/api/delete_leave', {
-    fetch('http://10.0.2.2:8000/api/delete_leave', {
+    fetch('http://leaveuat.greenmile.co.th/api/delete_leave', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

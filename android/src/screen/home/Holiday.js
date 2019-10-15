@@ -16,8 +16,8 @@ export default class Holiday extends Component {
   componentDidMount() {
     let first;
     let second;
-    // fetch('http://leave.greenmile.co.th/api/get_vacations')
-    fetch('http://10.0.2.2:8000/api/get_vacations')
+    fetch('http://leaveuat.greenmile.co.th/api/get_vacations')
+    // fetch('http://10.0.2.2:8000/api/get_vacations')
     // fetch('http://127.0.0.1:8000/api/get_vacations')
     .then((response) => response.json())
     .then((responseJson) => {
@@ -47,7 +47,7 @@ export default class Holiday extends Component {
           <View style={{flex:1, alignItems:'center', justifyContent:'center', marginBottom:10, marginHorizontal:10}}>
               <Text style={{fontSize:20, marginTop:5, fontFamily: 'Righteous-Regular', color:'rgba(0, 0, 0, 0.4)'}}>Holiday</Text>
               <Text style={{fontSize:20, color:'green', fontFamily:'Kanit-Regular', marginTop:5}}>{this.state.firtData.title}</Text>
-              <Text style={{fontSize:15, fontFamily:'Kanit-Regular'}}>{ this.state.secendData.title }</Text>
+              <Text style={{flex: 1, textAlign: 'center', fontSize:15, fontFamily:'Kanit-Regular'}}>{ this.state.secendData.title }</Text>
           </View>
         </Card>
     );

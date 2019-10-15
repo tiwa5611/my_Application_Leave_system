@@ -25,9 +25,9 @@ export default class LeaveSummary extends Component {
       console.log('token value: ', token_summary)
       if( token_summary != null ) {
         let token_value = JSON.parse(token_summary);
-        // fetch('http://leave.greenmile.co.th/api/get_personal_leave' , {
+        fetch('http://leaveuat.greenmile.co.th/api/get_personal_leave' , {
         // fetch('http://127.0.0.1:8000/api/get_personal_leave' , {
-        fetch('http://10.0.2.2:8000/api/get_personal_leave' , {
+        // fetch('http://10.0.2.2:8000/api/get_personal_leave' , {
           method: 'POST',
           headers: {
             Accept: 'application/json',

@@ -231,8 +231,8 @@ class CreatePage extends Component {
     try {
       let token = await AsyncStorage.getItem('user_token');
       let token_value = JSON.parse(token);
-      // fetch('http://127.0.0.1:8000/api/update_leave', {
-        fetch('http://10.0.2.2:8000/api/update_leave', {
+      fetch('http://leaveuat.greenmile.co.th/api/update_leave', {
+        // fetch('http://10.0.2.2:8000/api/update_leave', {
       // fetch('http://leave.greenmile.co.th/api/save_leave' , {
         method: 'POST',
         headers: {

@@ -10,6 +10,17 @@ export default class ContentComponent extends Component {
     super(props);
     this.state = {
     };
+    this.closeDrawer = this.closeDrawer.bind(this);
+    this.pressLink = this.pressLink.bind(this);
+  }
+
+  closeDrawer() {
+    this.props.drawerMethods.closeDrawer();
+  }
+
+  pressLink(screen) {
+    this.props.navigate.navigate(screen);
+    this.props.drawerMethods.closeDrawer();
   }
 
   render() {
@@ -23,7 +34,8 @@ export default class ContentComponent extends Component {
                     <Image source={require('../images/logo_drawer.png')} style={{width:180, height:180}}/>
                 </View>
                 <View style={styles.textGroupStyle}>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Calendar')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.pressLink('Calendar')}>
+                        {/* onPress={()=> this.props.navigation.navigate('Calendar') */}
                         <Text style={styles.textStyle}>หน้าหลัก</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Create')}>

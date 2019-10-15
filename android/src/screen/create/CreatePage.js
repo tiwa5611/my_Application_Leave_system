@@ -22,10 +22,10 @@ class CreatePage extends Component {
     this.state = {
       date_form : current,
       date_to : current,
-      selectedIndex: 2,
-      selectedIndexPeriod:2,
-      leave_type:'ลาพักร้อน',
-      leave_period:'บ่าย',
+      selectedIndex: 0,
+      selectedIndexPeriod: 0,
+      leave_type: 'ลาป่วย',
+      leave_period: 'ทั้งวัน',
       textReason:'',
       disable:[]
     }
@@ -210,8 +210,8 @@ class CreatePage extends Component {
     try {
       let token = await AsyncStorage.getItem('user_token');
       let token_value = JSON.parse(token);
-      // fetch('http://127.0.0.1:8000/api/save_leave', {
-      fetch('http://10.0.2.2:8000/api/save_leave', {
+      fetch('http://leaveuat.greenmile.co.th/api/save_leave', {
+      // fetch('http://10.0.2.2:8000/api/save_leave', {
       // fetch('http://leave.greenmile.co.th/api/save_leave' , {
         method: 'POST',
         headers: {

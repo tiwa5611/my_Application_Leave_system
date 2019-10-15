@@ -86,12 +86,13 @@ export default class login extends Component {
   }
 
   clickListener = () => {
-    // fetch('http://leave.greenmile.co.th/api/login', {
+    // fetch('http://leaveuat.greenmile.co.th/api/login', {
     const {username, password} = this.state
     if( (username === '' ||  password === '') ) {
       alert('กรุณากรอก username and password')
     } else {
-      fetch('http://10.0.2.2:8000/api/login', {
+      // fetch('http://10.0.2.2:8000/api/login', {
+      fetch('http://leaveuat.greenmile.co.th/api/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

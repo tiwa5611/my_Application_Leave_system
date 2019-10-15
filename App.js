@@ -11,8 +11,8 @@ import AppContainer from './android/src/components/AppContainerComponent';
 import  ModalExample  from './android/src/Modal/ModalAlert';
 class App extends Component {
   render() {
-    // return <AppContainer/>;
-    return <ModalExample/>
+    return <AppContainer/>;
+    // return <ModalExample/>
   }
 }
 export default App;

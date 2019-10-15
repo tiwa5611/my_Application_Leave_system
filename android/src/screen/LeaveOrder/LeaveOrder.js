@@ -16,8 +16,8 @@ class LeaveOrderPage extends Component {
   }
 
   componentDidMount() {
-    // fetch('http://127.0.0.1:8000/api/get_incoming_leave')
-    fetch('http://10.0.2.2:8000/api/get_incoming_leave')
+    fetch('http://leaveuat.greenmile.co.th/api/get_incoming_leave')
+    // fetch('http://10.0.2.2:8000/api/get_incoming_leave')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
@@ -39,40 +39,52 @@ class LeaveOrderPage extends Component {
         </View>
       );
     } else {
-      return (
-        <Container style={styles.containerStyle}>
-          <StatusBar translucent
-            backgroundColor="rgba(0, 0, 0, 0.01)"
-            animated={false}
-          />
-          <View>
-          <FlatList
-            data={this.state.dataSource}
-            renderItem={({item}) => { 
-              return(
-                <View>
-                  <View style={styles.containerListStyle}>
-                    <View style={{ width:5, backgroundColor : item.status === 'Approved'? '#379245':'#bcc5bc' }}/>
-                    <View style={{marginLeft:10, marginRight:15, alignItems:'center', justifyContent:'center' }}>
-                      <Icon name={item.status === 'Approved'? 'check-circle' : 'history' } size={30} color={item.status === 'Approved'? '#379245':'#bcc5bc'}/>
-                    </View>
-                    <View style={{flexDirection:'column', marginVertical:10}}>
-                      <View style={{marginTop:10}}>
-                          <Text style={styles.timeStyle}>{item.leave_date}</Text>
+      if(!this.state.dataSource === '') {
+        return (
+          <Container style={styles.containerStyle}>
+            <StatusBar translucent
+              backgroundColor="rgba(0, 0, 0, 0.01)"
+              animated={false}
+            />
+            <View>
+            <FlatLis
+              data={this.state.dataSource}
+              renderItem={({item}) => {
+                return(
+                  <View>
+                    <View style={styles.containerListStyle}>
+                      <View style={{ width:5, backgroundColor : item.status === 'Approved'? '#379245':'#bcc5bc' }}/>
+                      <View style={{marginLeft:10, marginRight:15, alignItems:'center', justifyContent:'center' }}>
+                        <Icon name={item.status === 'Approved'? 'check-circle' : 'history' } size={30} color={item.status === 'Approved'? '#379245':'#bcc5bc'}/>
                       </View>
-                      <View style={{flexDirection:'row'}} >  
-                        <Text style={styles.textName}>{item.emp_name}</Text>
-                        <Text style={[styles.textName,{ marginLeft:10}]}>({item.status === 'Approved' ? 'อนุมัติ' : 'รออนุมัติ' })</Text>
+                      <View style={{flexDirection:'column', marginVertical:10}}>
+                        <View style={{marginTop:10}}>
+                            <Text style={styles.timeStyle}>{item.leave_date}</Text>
+                        </View>
+                        <View style={{flexDirection:'row'}} >  
+                          <Text style={styles.textName}>{item.emp_name}</Text>
+                          <Text style={[styles.textName,{ marginLeft:10}]}>({item.status === 'Approved' ? 'อนุมัติ' : 'รออนุมัติ' })</Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              )}
-            }
-          />
-          </View>
-        </Container>
-      );
+                )}
+              }
+            />
+            </View>
+          </Container>
+        )
+      } else {
+        return (
+          <Container style={styles.containerStyle}>
+              <View style={{flex:1, alignItems:"center", justifyContent:'center'}}>
+              { console.log('xxxx')}
+                <Icon name={'plane'} size={30} style={[{transform: [{ rotate: '315deg'}]}]}/>
+                <Text style={{fontSize:25, color:'red', fontFamily:'Kanit-Regular'}}>ไม่มีข้อมูลการลา</Text>
+              </View>
+          </Container>
+        )
+      }
     }
   }
 }

@@ -8,47 +8,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 import LeaveSummary from './LeaveSummary';
 import Holiday from './Holiday';
-import { identifier } from '@babel/types';
 const width = Dimensions.get('window').width * 0.9;
 const widthtab = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height ;
-const data_test = [
-		{
-			"leave_type": "ลาป่วย",
-			"date_from": "2019-10-11",
-			"date_to": "2019-10-12",
-			"leave_days": 2,
-			"status": "Approved"
-		},
-		{
-			"leave_type": "ลากิจ",
-			"date_from": "2019-10-12",
-			"date_to": "2019-10-14",
-			"leave_days": 2,
-			"status": "Approved"
-		},
-		{
-			"leave_type": "ลาพักผ่อน",
-			"date_from": "2019-10-13",
-			"date_to": "2019-10-14",
-			"leave_days": 2,
-			"status": "Approved"
-		},
-		{
-			"leave_type": "ลาป่วย",
-			"date_from": "2019-10-14",
-			"date_to": "2019-10-17",
-			"leave_days": 4,
-			"status": "Approved"
-		},
-		{
-			"leave_type": "ลาพักผ่อน",
-			"date_from": "2019-10-15",
-			"date_to": "2019-10-17",
-			"leave_days": 3,
-			"status": "Approved"
-		}
-	]
 
 class CalendarPage extends Component {
   constructor(props) {
@@ -72,8 +34,7 @@ class CalendarPage extends Component {
     data1.forEach( element => {
       let line = this.getlineCalendar(arrResult[element.date_from])
       let dateDiff = moment(element.date_from).diff(moment(element.date_to), 'days')
-      let diff = dateDiff*(-1)
-      for ( let i = 0 ; i <= diff ; i++ ) {
+      for ( let i = 0 ; i <= dateDiff*(-1) ; i++ ) {
         if ( i == 0 ) {
           date_from = element.date_from
         } else {
@@ -84,22 +45,19 @@ class CalendarPage extends Component {
         }
         arrResult[date_from]['periods'][line] = {
           startingDay: (i == 0)? true : false ,
-          endingDay : (dateDiff == 0 || i == dateDiff)? true : false ,
+          endingDay : ( i == dateDiff*(-1) || dateDiff*(-1) == 0 )? true : false ,
           color: this.getColor(element.leave_type)
         }
       }
     });
-
     arryValue = Object.assign({}, arrResult)
     result = this.convertFormatCalendar(arryValue)
-    console.log('result: ', result)
     this.setState({marktest:result})
   }
 
   convertFormatCalendar = (array) => {
     Object.keys(array).forEach((key) => {
       let maxKey = this.maxKeyArray(array[key])
-      console.log('max key: ', maxKey)
       for ( let i = 0 ; i < maxKey ; i++  ) {
         if(typeof array[key].periods[i] === 'undefined') {
           array[key].periods[i] = { color: 'transparent'} 
@@ -111,7 +69,6 @@ class CalendarPage extends Component {
 
   maxKeyArray = (key) => {
     let maxKey = 0;
-    console.log('max_key in fucntion :', key.periods.length)
     if( maxKey < key.periods.length) {
       maxKey =  key.periods.length
     }
@@ -134,8 +91,8 @@ class CalendarPage extends Component {
   } 
 
   fetchDataApi = () => {
-    // fetch('http://leave.greenmile.co.th/api/get_calendar')
-    fetch('http://10.0.2.2:8000/api/get_calendar')
+    fetch('http://leaveuat.greenmile.co.th/api/get_calendar')
+    // fetch('http://10.0.2.2:8000/api/get_calendar')
     .then((response) => response.json())
     .then((responseJson) => {
         this.setState({
@@ -149,14 +106,11 @@ class CalendarPage extends Component {
       console.error('Eror in page home', error);
     });
   }
-
   
   onRefresh = () => {
     this.setState({refreshing:true})
     this.fetchDataApi()
   } 
-
-
 
   getColor = (color) => {
     switch(color) {
@@ -201,58 +155,6 @@ class CalendarPage extends Component {
                     calendarWidth={width}
                     markingType={'multi-period'}
                     markedDates={this.state.marktest}
-                    // markedDates={{
-                    //   '2019-10-14': {
-                    //     periods: [
-                    //       { startingDay: true, endingDay: false, color: '#5f9ea0' },
-                    //     ]
-                    //   },
-                    //   '2019-10-15': {
-                    //     periods: [
-                    //       { startingDay: false, endingDay: true, color: '#5f9ea0' },
-                    //       { startingDay: true, endingDay: false, color: '#ffa500' },
-                    //     ]
-                    //   },
-                    //   '2019-10-16': {
-                    //     periods: [
-                    //       { startingDay: true, endingDay: false, color: '#ffa500' },
-                    //       { startingDay: false, endingDay: true, color: '#ffa500' },
-
-                    //     ]
-                    //   },
-                    //   '2019-10-17': {
-                    //     periods: [
-                    //       { startingDay: false, endingDay: true, color: '#ffa500' },
-                    //       { color: 'transparent' },
-
-                    //     ]
-                    //   },
-                    //   '2019-10-18': {
-                    //     periods: [
-                    //       { color: 'transparent' },
-                    //       { startingDay: false, endingDay: true, color: '#ffa500' },
-                    //       { color: 'transparent' },
-
-                    //     ]
-                    //   },
-                    //   '2019-10-19': {
-                    //     periods: [
-                    //       { color: 'transparent' },
-                    //       { startingDay: false, endingDay: true, color: '#ffa500' },
-                    //       { color: 'transparent' },
-
-                    //     ]
-                    //   },
-                    //   '2019-09-20': {
-                    //     periods: [
-                    //       { color: 'transparent' },
-                    //       { startingDay: false, endingDay: true, color: '#ffa500' },
-                    //       { color: 'transparent' },
-
-                    //     ]
-                    //   },
-                      
-                    // }}
                     theme = {{
                       todayTextColor: 'green',
                       monthTextColor: 'green',
@@ -318,8 +220,6 @@ export default CalendarScreen = createAppContainer(createStackNavigator({
   };
 }
 }));
-
-
 
 const styles = StyleSheet.create({
   ContainerStyle: {

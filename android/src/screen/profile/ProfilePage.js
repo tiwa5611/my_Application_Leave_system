@@ -21,9 +21,9 @@ class ProfilePage extends Component {
   fetchDatafromAIP = async () => {
     try {
       if( JSON.parse(await AsyncStorage.getItem('user_token')) != null) {
-        // fetch('http://leave.greenmile.co.th/api/profile' , {
+        fetch('http://leaveuat.greenmile.co.th/api/profile' , {
         // fetch('http://127.0.0.1:8000/api/profile' , {
-        fetch('http://10.0.2.2:8000/api/profile' , {
+        // fetch('http://10.0.2.2:8000/api/profile' , {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -63,7 +63,7 @@ class ProfilePage extends Component {
                   <View style={{marginTop:-130, alignItems:'center' ,backgroundColor: 'transparent' }}>
                     <Image 
                       style={styles.imageStyle}
-                      source={ this.state.dataSouce.picture ===""? require('../../images/default_image.png') : { uri: this.state.dataSouce.picture } }
+                      source={ this.state.dataSouce.picture === null ? require('../../images/default_image.png') : { uri: this.state.dataSouce.picture } }
                       />
                   </View>
                   <View style={styles.textViewStart}>
