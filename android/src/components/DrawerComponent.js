@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Dimensions } from 'react-native';
-import {createDrawerNavigator} from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation';
 import StackComponent from '../components/StackComponent';
 import ContentComponent from '../components/ContentComponent';
 import CalendarPage from '../screen/home';
@@ -36,5 +36,5 @@ export default DrawerNavigation = createDrawerNavigator({
 },{
   initialRouteName: 'Dashboard',
   contentComponent: ContentComponent,
-  drawerWidth: width
+  drawerWidth: width,
 });

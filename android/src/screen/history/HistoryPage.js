@@ -207,25 +207,24 @@ class HistoryPage extends Component {
             )}
             renderHiddenItem={ (data, rowMap) => (
               data.item.type.status == 'Send to approve'?
-                <View style={{flexDirection:'row-reverse', height:'100%'}}>
-                  <TouchableOpacity
-                    onPress={ _ => { this.editRow(rowMap, data.item.type.id)}}
-                    activeOpacity={0.5} 
-                    style={[styles.swipeButtonStyle, {backgroundColor: '#8a8787'}]} 
-                  >
-                    <Text style={styles.textSwipeStyle}>แก้ไข</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={ _ => this.deleteRow(rowMap, data.item.key, data.item.type.id) }
-                    activeOpacity={0.5} 
-                    style={[styles.swipeButtonStyle, {backgroundColor: 'red'}]}
-                  >
-                    <Text style={styles.textSwipeStyle}>ลบ</Text>
-                  </TouchableOpacity>
-                </View>
-              :
+              <View style={{flexDirection:'row-reverse', height:'100%'}}>
+                <TouchableOpacity
+                  onPress={ _ => { this.editRow(rowMap, data.item.type.id)}}
+                  activeOpacity={0.5} 
+                  style={[styles.swipeButtonStyle, {backgroundColor: '#8a8787'}]} 
+                >
+                  <Text style={styles.textSwipeStyle}>แก้ไข</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ _ => this.deleteRow(rowMap, data.item.key, data.item.type.id) }
+                  activeOpacity={0.5} 
+                  style={[styles.swipeButtonStyle, {backgroundColor: 'red'}]}
+                >
+                  <Text style={styles.textSwipeStyle}>ลบ</Text>
+                </TouchableOpacity>
+              </View> :
               <View style={{flexDirection:'row-reverse', height:'100%',}}>
-                <TouchableHighlight style={{flex:1, width:150,  backgroundColor: '#8a8787', alignItems:'center', justifyContent:'center',}} 
+                <TouchableHighlight style={{flex:1, width:150,  backgroundColor: 'white', alignItems:'center', justifyContent:'center',}} 
                 >
                 <Icon name={data.item.type.status === 'Approved'? 'check-circle':'times-circle'} color={'#328e44'} size={width*0.14}/>
                   {/* <Text style={{color:'white', fontSize:20, fontFamily:'Kanit-Regular',}} >{data.item.type.status === 'Approved'? 'อนุมัติ':'ไม่อนุมัติ'}</Text> */}

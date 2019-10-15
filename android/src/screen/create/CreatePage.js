@@ -59,7 +59,7 @@ class CreatePage extends Component {
     this.setState({
       date_form : current,
       date_to : current,
-      textReason:''
+      textReason: ''
     })
   }
 
@@ -69,7 +69,7 @@ class CreatePage extends Component {
   }
 
   comPareDate = (dataForm, dateTo) => {
-    if(dataForm < dateTo){
+    if(dataForm < dateTo) {
       this.setState({selectedIndexPeriod:0})
       return true
     }

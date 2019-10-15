@@ -140,8 +140,6 @@ class CalendarPage extends Component {
         >
           <View style={{paddingHorizontal:10, marginTop:80}}>
             <Card style={styles.CalendarCard}>
-              {/* {console.log('martest data: ', this.state.marktest)} */}
-              {/* {console.log('mared data: ', this.state.marked)} */}
                 <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                   <CalendarList
                     style={{

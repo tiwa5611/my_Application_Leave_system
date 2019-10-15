@@ -34,7 +34,7 @@ export default class ContentComponent extends Component {
                     <Image source={require('../images/logo_drawer.png')} style={{width:180, height:180}}/>
                 </View>
                 <View style={styles.textGroupStyle}>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.pressLink('Calendar')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Calendar')}>
                         {/* onPress={()=> this.props.navigation.navigate('Calendar') */}
                         <Text style={styles.textStyle}>หน้าหลัก</Text>
                     </TouchableOpacity>
