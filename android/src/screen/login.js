@@ -16,11 +16,7 @@ export default class login extends Component {
   }
 
   componentDidMount () {
-  } 
-
-
-  render() {
-
+    
     this.conditiongetToken().then(( token ) => {
       if(token != null) {
         return this.props.navigation.navigate('Dashboard')
@@ -30,7 +26,12 @@ export default class login extends Component {
     }).catch((error) =>{
       alert("error in page login:", error);
     }) 
+  } 
 
+
+  render() {
+
+    console.log('render login');
     if(!this.state.isLoad) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
@@ -56,6 +57,7 @@ export default class login extends Component {
                     <Text style={styles.textSubtitle}>USERNAME</Text>
                       <Item style={styles.textInput}>
                         <Input 
+                          style={{ color:'white' }}
                           onChangeText={(text) => this.setState({ username:text })}
                           value={this.state.username}
                         />
@@ -65,6 +67,7 @@ export default class login extends Component {
                     <Text style={styles.textSubtitle}>PASSWORD</Text>
                       <Item style={styles.textInput}>
                         <Input 
+                          style={{ color:'white' }}
                           secureTextEntry={true}
                           onChangeText={(text) => this.setState({ password:text })}
                           value={this.state.password}
@@ -89,7 +92,7 @@ export default class login extends Component {
     // fetch('http://leaveuat.greenmile.co.th/api/login', {
     const {username, password} = this.state
     if( (username === '' ||  password === '') ) {
-      alert('กรุณากรอก username and password')
+      alert('กรุณากรอก ชื่อผู้ใช้ และ รหัสผ่าน')
     } else {
       // fetch('http://10.0.2.2:8000/api/login', {
       fetch('http://leaveuat.greenmile.co.th/api/login', {
@@ -104,10 +107,10 @@ export default class login extends Component {
         })
       }).then((response) => response.json())
       .then((result) => { 
-          if(result.data != null) {
+          if(result.data.token != 'invalid') {
             this.saveToken(result.data);
           } else {
-            alert('ชื่อผู้ใช้ไม่ถูกต้อง')
+            alert('รหัสผู้ใช้ไม่ถูกต้อง')
             this.setState({
               username:'',
               password:''
@@ -116,7 +119,7 @@ export default class login extends Component {
       })
       .catch( (error) => {
         console.log("-------- error ------- " + error);
-        alert("result:" + error)
+        alert("ชื่อผู้ใช้ไม่อยู่ในระบบ")
       });
     }
   }

@@ -10,17 +10,11 @@ export default class ContentComponent extends Component {
     super(props);
     this.state = {
     };
-    this.closeDrawer = this.closeDrawer.bind(this);
-    this.pressLink = this.pressLink.bind(this);
+ 
   }
 
-  closeDrawer() {
-    this.props.drawerMethods.closeDrawer();
-  }
-
-  pressLink(screen) {
-    this.props.navigate.navigate(screen);
-    this.props.drawerMethods.closeDrawer();
+  toggleDrawer() {
+    this.props.navigation.toggleDrawer();
   }
 
   render() {
@@ -34,20 +28,19 @@ export default class ContentComponent extends Component {
                     <Image source={require('../images/logo_drawer.png')} style={{width:180, height:180}}/>
                 </View>
                 <View style={styles.textGroupStyle}>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Calendar')}>
-                        {/* onPress={()=> this.props.navigation.navigate('Calendar') */}
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Calendar', this.toggleDrawer())}>
                         <Text style={styles.textStyle}>หน้าหลัก</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Create')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Create', this.toggleDrawer())}>
                         <Text style={styles.textStyle}>แบบฟอร์มใบลา</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('History')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('History', this.toggleDrawer())}>
                         <Text style={styles.textStyle}>ประวัติการลา</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Profile')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Profile', this.toggleDrawer())}>
                         <Text style={styles.textStyle}>ประวัติส่วนตัว</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Leaveorder')}>
+                    <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.props.navigation.navigate('Leaveorder', this.toggleDrawer())}>
                         <Text style={styles.textStyle}>รายการลา</Text>
                     </TouchableOpacity>
                     <TouchableOpacity activeOpacity={1} style={styles.styleBlockButton} onPress={()=> this.deleteToken()}>

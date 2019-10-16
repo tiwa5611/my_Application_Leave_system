@@ -79,8 +79,8 @@ class LeaveOrderPage extends Component {
           <Container style={styles.containerStyle}>
               <View style={{flex:1, alignItems:"center", justifyContent:'center'}}>
               { console.log('xxxx')}
-                <Icon name={'plane'} size={30} style={[{transform: [{ rotate: '315deg'}]}]}/>
-                <Text style={{fontSize:25, color:'red', fontFamily:'Kanit-Regular'}}>ไม่มีข้อมูลการลา</Text>
+                <Icon name={'plane'} size={40} style={[{transform: [{ rotate: '315deg'}]}]} color={'#A3A3A3'}/>
+                <Text style={{fontSize:25, color:'#A3A3A3', fontFamily:'Kanit-Regular', marginTop:10}}>ไม่มีข้อมูลการลา</Text>
               </View>
           </Container>
         )

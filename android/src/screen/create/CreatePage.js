@@ -104,7 +104,7 @@ class CreatePage extends Component {
                           onPress={this.updateIndex}
                           buttons={buttons}
                           textStyle={{fontFamily:'Kanit-Regular'}}
-                          selectedButtonStyle={{ backgroundColor:'#72b552'}}
+                          selectedButtonStyle={{ backgroundColor:'gray'}}
                           selectedTextStyle = {{ color: 'white', fontFamily:'Kanit-Regular' }}
                           containerStyle={{height: 50, borderRadius:10, height:40, borderColor:'gray'}}
                         />
@@ -169,7 +169,7 @@ class CreatePage extends Component {
                         buttons={buttonsPeriod}
                         disabled={this.state.disable}
                         textStyle={{fontFamily:'Kanit-Regular'}}
-                        selectedButtonStyle={{ backgroundColor:'#72b552'}}
+                        selectedButtonStyle={{ backgroundColor:'gray'}}
                         selectedTextStyle = {{ color: 'white' , fontFamily:'Kanit-Regular' }}
                         containerStyle={{height: 50, borderRadius:10, height:40, borderColor:'gray'}}
                       />
@@ -197,6 +197,9 @@ class CreatePage extends Component {
                         <TouchableOpacity activeOpacity={0.5} style={styles.btnSendstyle} onPress={this.hadleSubmit}>
                             <Text style={styles.textSendFrom}>ส่งใบลา</Text>
                         </TouchableOpacity>
+                    </View>
+                    <View style={{marginBottom:10, justifyContent:'center', alignItems:'center'}}>
+                        <Text>ประวัติการลา</Text>
                     </View>
                 </Card> 
               </View>
@@ -318,7 +321,7 @@ const styles = StyleSheet.create({
   ViewLevelOne: {
     width:width*0.82 , 
     borderRadius:200, 
-    backgroundColor: '#72b552', 
+    backgroundColor: 'gray', 
     marginHorizontal: 10,
     borderTopColor:'rgba(0, 0, 0, 0.7)',
     borderBottomColor: 'rgba(0, 0, 0, 0.7)',
@@ -333,7 +336,7 @@ const styles = StyleSheet.create({
     height:40, 
     alignItems:'center', 
     justifyContent:'center', 
-    backgroundColor: '#72b552', 
+    backgroundColor: 'gray', 
     borderColor:'gray', 
   }
   

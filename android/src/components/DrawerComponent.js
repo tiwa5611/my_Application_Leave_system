@@ -15,7 +15,7 @@ export default DrawerNavigation = createDrawerNavigator({
   Dashboard: {
     screen: StackComponent,
   },
-  Calendar:{
+  Calendar: {
     screen:CalendarPage
   },
   Create: {
