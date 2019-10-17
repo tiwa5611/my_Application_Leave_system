@@ -10,7 +10,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 const width = Dimensions.get('screen').width;
 const height = Dimensions.get('screen').height;
-let status_tap = false
 class CreatePage extends Component {
   constructor(props) {
     // leave_date_type = leave_period
@@ -22,6 +21,7 @@ class CreatePage extends Component {
     this.state = {
       date_form : current,
       date_to : current,
+      current: current,
       selectedIndex: 0,
       selectedIndexPeriod: 0,
       leave_type: 'ลาป่วย',
@@ -51,9 +51,6 @@ class CreatePage extends Component {
     this.setState({selectedIndexPeriod})
   }
 
-  componentDidMount(){
-  }
-
   refreshPage = () => {
     console.log('Call refreshPage')
     this.setState({
@@ -63,25 +60,19 @@ class CreatePage extends Component {
     })
   }
 
-  handleSubmitRefresh = (event) => {
-    event.preventDefault();
-    console.log('Submitted!');
-  }
-
   comPareDate = (dataForm, dateTo) => {
-    if(dataForm < dateTo) {
-      this.setState({selectedIndexPeriod:0})
+    if((dataForm < dateTo)) {
       return true
     }
     return false
   }
 
-
-
   render() {    
       const buttons = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน'];
       const buttonsPeriod = ['ทั้งวัน', 'เช้า', 'บ่าย'];
       const { selectedIndex, selectedIndexPeriod } = this.state;
+      console.log('date_form: ', this.state.date_form)
+      console.log('date_to: ', this.state.date_to)
       return (
       <Container style={styles.ContainerStyle}>
         <StatusBar translucent
@@ -131,7 +122,14 @@ class CreatePage extends Component {
                               }
                             }}
                             onDateChange={(date_form) => {
-                              this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
+                              // {console.log('this.comPareDate(date_form, this.state.date_to)', this.comPareDate(date_form, this.state.date_to))}
+                              console.log('xxx', this.state.current)
+                              if(date_form < this.state.current) {
+                                console.log('form < current')
+                                this.setState({date_form: this.state.current})
+                              }else {
+                                this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form , selectedIndexPeriod:0, disable:[1,2]}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
+                              }
                             }}
                           />
                         </View>
@@ -155,7 +153,17 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_to) => { this.state.date_form !== date_to? this.setState({date_to: date_to , disable:[1,2], selectedIndexPeriod:0}):this.setState({date_to: date_to, disable:[]})}}
+                            onDateChange={(date_to) => {
+                              if(date_to < this.state.current) {
+                                this.setState({date_form: this.state.current , date_to: this.state.current, disable:[]})
+                              } else if ( date_to < this.state.date_form) {
+                                this.setState({date_form: date_to , date_to: date_to, disable:[]})
+                              } else if (date_to === this.state.date_form) {
+                                this.setState({ date_to : date_to,  disable:[]})
+                              } else if ( date_to !== this.state.date_form ) {
+                                this.setState({ date_to : date_to, selectedIndexPeriod:0, disable:[1,2]})
+                              }
+                            }}
                           />  
                         </View>
                       </View>
@@ -198,9 +206,14 @@ class CreatePage extends Component {
                             <Text style={styles.textSendFrom}>ส่งใบลา</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{marginBottom:10, justifyContent:'center', alignItems:'center'}}>
-                        <Text>ประวัติการลา</Text>
-                    </View>
+                    <TouchableOpacity 
+                      activeOpacity={0.5} 
+                      style={{flexDirection:'row', marginBottom:15, justifyContent:'center', alignItems:'center', marginTop:-8}}
+                      onPress={() => this.props.navigation.navigate("History")}
+                    >
+                        <Icon name="paper-plane" size={15} color={'#328e44'} style={{marginRight:5}} />
+                        <Text style={{color:'#328e44'}}>ประวัติการลา</Text>
+                    </TouchableOpacity>
                 </Card> 
               </View>
             </ScrollView>
@@ -257,7 +270,6 @@ export default CreateScreen = createAppContainer(createStackNavigator({
     screen: CreatePage
   },
 },{
-
   defaultNavigationOptions: ({ navigation }) => {
     return {
       headerTransparent:true,

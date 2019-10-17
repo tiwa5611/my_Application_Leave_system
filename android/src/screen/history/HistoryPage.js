@@ -48,7 +48,8 @@ class HistoryPage extends Component {
   }
 
   componentDidMount() {
-    const count_limit = 100
+    console.log('componentDidMount in History Page')
+    const count_limit = 1000
     this.fetchDataApi()
     this.rowSwipeAnimatedValues = {};	
     Array(count_limit).fill('').forEach((_, i) => {
@@ -80,8 +81,6 @@ class HistoryPage extends Component {
       console.error(error);
     });
   }
-
-
   
   editRow =  async (rowMap, rowKey) => {
     //10.0.2.2:8000
@@ -158,16 +157,25 @@ class HistoryPage extends Component {
       }
     }
   
-    getIcon = (icon) => {
-      switch(icon) {
-        case "ลาป่วย" : return 'plus-circle';
-        case "ลากิจ" : return 'exclamation-triangle';
-        default:
-          return 'plane'
-      }
+  getIcon = (icon) => {
+    switch(icon) {
+      case "ลาป่วย" : return 'plus-circle';
+      case "ลากิจ" : return 'exclamation-triangle';
+      default:
+        return 'plane'
     }
+  }
+
+  getSnapshotBeforeUpdate() {
+    console.log('getSnapshotBeforeUpdate')
+  }
+
+  // shouldComponentUpdate() {
+  //   return console.log('shouldComponentUpdate');
+  // }
 
   render() {
+    console.log('render in History Page')
     if(this.state.isloading) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
@@ -199,7 +207,7 @@ class HistoryPage extends Component {
                       <Icon name={ data.item.type.status == 'Send to approve' ? 'info-circle': ''} color={'#8a8787'}/>
                     </View> : 
                     <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
-                      <Text>{ data.item.type.status == 'Approved' ? 'อนุมัติ': 'ไม่อนุมัติ'} </Text>
+                      <Text style={{fontSize:10, color:'#8a8787'}}>{ data.item.type.status == 'Approved' ? 'อนุมัติ': 'ไม่อนุมัติ'} </Text>
                     </View>
                   }
                 </View>
@@ -224,10 +232,10 @@ class HistoryPage extends Component {
                 </TouchableOpacity>
               </View> :
               <View style={{flexDirection:'row-reverse', height:'100%',}}>
-                <TouchableHighlight style={{flex:1, width:150,  backgroundColor: 'white', alignItems:'center', justifyContent:'center',}} 
+                <TouchableHighlight style={{flex:1, width:150,  backgroundColor: '#e2e2e2', alignItems:'center', justifyContent:'center',}} 
                 >
-                <Icon name={data.item.type.status === 'Approved'? 'check-circle':'times-circle'} color={'#328e44'} size={width*0.14}/>
-                  {/* <Text style={{color:'white', fontSize:20, fontFamily:'Kanit-Regular',}} >{data.item.type.status === 'Approved'? 'อนุมัติ':'ไม่อนุมัติ'}</Text> */}
+                {/* <Icon name={data.item.type.status === 'Approved'? 'check-circle':'times-circle'} color={'#328e44'} size={width*0.14}/> */}
+                  <Text style={{color:'#A3A3A3', fontSize:15, fontFamily:'Kanit-Regular',}} >ไม่สามารถแก้ใขได้</Text>
                 </TouchableHighlight>
               </View>
             )}
@@ -251,7 +259,6 @@ class HistoryPage extends Component {
 }
 
 export const Separator = () => <View style={styles.separator} />;
-
 export default  History = createAppContainer(createStackNavigator({
   History:{
     screen:HistoryPage
