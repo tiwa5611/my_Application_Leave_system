@@ -111,6 +111,10 @@ class HistoryPage extends Component {
 		}
   }
 
+  openRow = (rowMap, rowKey) => {
+    console.log('row', rowMap[rowKey]);
+  }
+
 	deleteRow = async (rowMap, rowKey, rowId) => {
     // fetch('http://leave.greenmile.co.th/api/get_leave')
     // fetch('http://127.0.0.1:8000/api/delete_leave', {
@@ -166,14 +170,6 @@ class HistoryPage extends Component {
     }
   }
 
-  getSnapshotBeforeUpdate() {
-    console.log('getSnapshotBeforeUpdate')
-  }
-
-  // shouldComponentUpdate() {
-  //   return console.log('shouldComponentUpdate');
-  // }
-
   render() {
     console.log('render in History Page')
     if(this.state.isloading) {
@@ -191,8 +187,13 @@ class HistoryPage extends Component {
           <SwipeListView
             data={this.state.listViewData}
             keyExtractor={ item => item.id }
-            renderItem={ (data ) => (
+            renderItem={ (data, rowKey, rowMap ) => (
               <View>
+                <TouchableHighlight
+                  onPress={ () => this.openRow(rowKey) }
+                  // underlayColor={'#AAA'}
+                  activeOpacity={1}
+                >
                 <View style={styles.containerListStyle}>
                   <View style={{width:5, backgroundColor:this.getColor(data.item.type.leave_type) }} />
                   <View style={{marginLeft:10, marginRight:15, alignItems:'center', justifyContent:'center'}}>
@@ -207,10 +208,11 @@ class HistoryPage extends Component {
                       <Icon name={ data.item.type.status == 'Send to approve' ? 'info-circle': ''} color={'#8a8787'}/>
                     </View> : 
                     <View style={{flex:1, flexDirection:'row-reverse', marginLeft:5, marginTop:5}}>
-                      <Text style={{fontSize:10, color:'#8a8787'}}>{ data.item.type.status == 'Approved' ? 'อนุมัติ': 'ไม่อนุมัติ'} </Text>
+                      <Text style={{fontSize:10, color:'#8a8787', fontFamily:'Kanit-Regular',}}>{ data.item.type.status == 'Approved' ? 'อนุมัติ': 'ไม่อนุมัติ'} </Text>
                     </View>
                   }
                 </View>
+              </TouchableHighlight>
               </View> 
             )}
             renderHiddenItem={ (data, rowMap) => (

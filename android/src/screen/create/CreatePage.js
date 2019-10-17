@@ -208,11 +208,10 @@ class CreatePage extends Component {
                     </View>
                     <TouchableOpacity 
                       activeOpacity={0.5} 
-                      style={{flexDirection:'row', marginBottom:15, justifyContent:'center', alignItems:'center', marginTop:-8}}
+                      style={{flexDirection:'row', marginBottom:16, justifyContent:'center', alignItems:'center', marginTop:-6}}
                       onPress={() => this.props.navigation.navigate("History")}
                     >
-                        <Icon name="paper-plane" size={15} color={'#328e44'} style={{marginRight:5}} />
-                        <Text style={{color:'#328e44'}}>ประวัติการลา</Text>
+                        <Text style={{color:'#328e44', fontFamily:'Kanit-Regular', fontSize:17}}>ประวัติการลา</Text>
                     </TouchableOpacity>
                 </Card> 
               </View>
@@ -286,7 +285,6 @@ export default CreateScreen = createAppContainer(createStackNavigator({
 const styles = StyleSheet.create({
   ContainerStyle: {
     backgroundColor: '#e2e2e2',
-
   },
   textInputBlock:{
     fontSize:20, 
