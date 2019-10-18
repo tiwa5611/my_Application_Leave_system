@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
+    "@react-native-community/netinfo": "^4.4.0",
     "deprecated-react-native-listview": "0.0.5",
     "moment": "^2.24.0",
     "native-base": "^2.13.4",

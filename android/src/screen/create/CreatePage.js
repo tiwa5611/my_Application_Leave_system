@@ -122,10 +122,7 @@ class CreatePage extends Component {
                               }
                             }}
                             onDateChange={(date_form) => {
-                              // {console.log('this.comPareDate(date_form, this.state.date_to)', this.comPareDate(date_form, this.state.date_to))}
-                              console.log('xxx', this.state.current)
                               if(date_form < this.state.current) {
-                                console.log('form < current')
                                 this.setState({date_form: this.state.current})
                               }else {
                                 this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form , selectedIndexPeriod:0, disable:[1,2]}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
@@ -221,7 +218,7 @@ class CreatePage extends Component {
   }
 
   hadleSubmit = async () => {
-    if(this.state.textReason === '') return Alert.alert('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบ',[{text:'ตกลง',style:'OK'}])
+    if(this.state.textReason === '') return Alert.alert('กรอกข้อมูล', 'กรุณากรอกข้อมูลให้ครบ', [{text:'ตกลง',style:'OK'}])
     try {
       let token = await AsyncStorage.getItem('user_token');
       let token_value = JSON.parse(token);
@@ -245,14 +242,14 @@ class CreatePage extends Component {
       .then((responseJson) => (responseJson.json()))
       .then((result) => {
         if(result.data) {
-          alert('บันทึกข้อมูลสำเร็จ')
+          Alert.alert('บันทึกข้อมูล', 'บันทึกข้อมูลสำเร็จ', [{text:'ตกลง',style:'OK'}])
           this.setState({
             date_form:this.current,
             date_to:this.current,
             textReason:''
           })
         } else {
-          alert('ผิดพลาด')
+          Alert.alert('บันทึกข้อมูล', 'บันทึกข้อมูลผิดพลาด', [{text:'ตกลง',style:'OK'}])
         }
       })
       .catch((error) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Animated, RefreshControl, ActivityIndicator, View,Image, Text, StyleSheet, Dimensions, TouchableOpacity, StatusBar, ListView} from 'react-native';
+import {Alert, Animated, RefreshControl, ActivityIndicator, View,Image, Text, StyleSheet, Dimensions, TouchableOpacity, StatusBar, ListView} from 'react-native';
 import  {Container, List, Button} from 'native-base';
 import {createAppContainer, createStackNavigator } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
@@ -131,11 +131,11 @@ class HistoryPage extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
         if(responseJson.data){
-          alert('ลบข้อมูลสำเร็จ')
+          Alert.alert('ลบข้อมูล', 'ลบข้อมูลสำเร็จ')
           this.closeRow(rowMap, rowKey)
           this.fetchDataApi();
         } else {
-          alert('ผิดพลาด')
+          Alert.alert('ลบข้อมูล', 'ลบข้อมูลผิดพลาด')
         }
     })
     .catch((error) => {
@@ -171,7 +171,6 @@ class HistoryPage extends Component {
   }
 
   render() {
-    console.log('render in History Page')
     if(this.state.isloading) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

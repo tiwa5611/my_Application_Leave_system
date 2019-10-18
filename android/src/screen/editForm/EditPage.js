@@ -26,6 +26,7 @@ class CreatePage extends Component {
       dataSourceEdit:'',
       date_form : current,
       date_to : current,
+      current: current,
       selectedIndex: 2,
       selectedIndexPeriod:2,
       leave_type:'ลาพักร้อน',
@@ -153,7 +154,11 @@ class CreatePage extends Component {
                               }
                             }}
                             onDateChange={(date_form) => {
-                              this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
+                              if(date_form < this.state.current) {
+                                this.setState({date_form: this.state.current})
+                              }else {
+                                this.comPareDate(date_form, this.state.date_to)?this.setState({date_form: date_form , selectedIndexPeriod:0, disable:[1,2]}):this.setState({date_form: date_form, date_to:date_form, disable:[]})
+                              }
                             }}
                           />
                         </View>
@@ -177,7 +182,17 @@ class CreatePage extends Component {
                                 backgroundColor:'white',
                               }
                             }}
-                            onDateChange={(date_to) => { this.state.date_form !== date_to? this.setState({date_to: date_to , disable:[1,2], selectedIndexPeriod:0}):this.setState({date_to: date_to, disable:[]})}}
+                            onDateChange={(date_to) => { 
+                              if(date_to < this.state.current) {
+                                this.setState({date_form: this.state.current , date_to: this.state.current, disable:[]})
+                              } else if ( date_to < this.state.date_form) {
+                                this.setState({date_form: date_to , date_to: date_to, disable:[]})
+                              } else if (date_to === this.state.date_form) {
+                                this.setState({ date_to : date_to,  disable:[]})
+                              } else if ( date_to !== this.state.date_form ) {
+                                this.setState({ date_to : date_to, selectedIndexPeriod:0, disable:[1,2]})
+                              }
+                            }}
                           />
                         </View>
                       </View>
