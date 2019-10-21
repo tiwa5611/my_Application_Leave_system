@@ -32,18 +32,17 @@ class App extends Component {
   }
   render() {
     return (
-          this.state.connection_status? 
-            <AppContainer/>
-            :
-            <View style={styles.MainContainer}>
-              <Icon name={'wifi-off'} size={80} color={'#A3A3A3'}/>
-              <Text style={{fontSize: 20, marginTop: 10, fontFamily:'Kanit-Regular', color:'#A3A3A3'}}>กรุณาตรวจเครือข่าย</Text>
-            </View>
+        this.state.connection_status? 
+        <AppContainer/>
+        :
+        <View style={styles.MainContainer}>
+          <Icon name={'wifi-off'} size={80} color={'#A3A3A3'}/>
+          <Text style={{fontSize: 20, marginTop: 10, fontFamily:'Kanit-Regular', color:'#A3A3A3'}}>กรุณาตรวจเครือข่าย</Text>
+        </View>
     )
   }
 }
 export default App;
-
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
@@ -56,6 +55,5 @@ const styles = StyleSheet.create({
     fontSize:20,
     textAlign: 'center',
   }
-
 });
 

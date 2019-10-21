@@ -235,7 +235,6 @@ class HistoryPage extends Component {
               <View style={{flexDirection:'row-reverse', height:'100%',}}>
                 <TouchableHighlight style={{flex:1, width:150,  backgroundColor: '#e2e2e2', alignItems:'center', justifyContent:'center',}} 
                 >
-                {/* <Icon name={data.item.type.status === 'Approved'? 'check-circle':'times-circle'} color={'#328e44'} size={width*0.14}/> */}
                   <Text style={{color:'#A3A3A3', fontSize:15, fontFamily:'Kanit-Regular',}} >ไม่สามารถแก้ใขได้</Text>
                 </TouchableHighlight>
               </View>
@@ -276,7 +275,7 @@ export default  History = createAppContainer(createStackNavigator({
           end={{ x: 1, y: 1 }}
           style={{flex:1 ,width:width}}>
           <View style={{flexDirection:'row'}}>
-            <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:10}} onPress={() => navigation.navigate('DashboardTabNavigator')}>
+            <TouchableOpacity style={{marginTop:40, marginLeft:20 ,marginBottom:height*0.01}} onPress={() => navigation.navigate('DashboardTabNavigator')}>
               <Image source={require('../../images/back_button.png')} style={{height:30, width:30, marginTop:15}}/>
             </TouchableOpacity>
             <View style={{flex:1 ,justifyContent:'center' ,alignItems:'center'}}>
@@ -290,7 +289,7 @@ export default  History = createAppContainer(createStackNavigator({
 
 const styles = StyleSheet.create({
   containerStyle:{
-    backgroundColor: '#e2e2e2',
+    backgroundColor: '#e2e2e2', 
     marginTop:height/10
   },
   containerListStyle: {
